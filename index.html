@@ -126,6 +126,17 @@
   .xls-grid td.numtext{text-align:right}
   .xls-grid td.hl{background:#fff3bf;font-weight:700;color:#7c5c00}
   .xls-grid td.active{outline:2px solid #217346;outline-offset:-2px;background:#e8f5ec}
+  .xls-grid td.xin{background:#fff6e5}
+  .xls-grid td.xout{background:#e6f4ea;outline:2px solid #217346;outline-offset:-2px;font-weight:800}
+  .mk{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;font-style:normal;
+    font-size:9px;font-weight:800;color:#fff;margin-right:5px;vertical-align:middle;line-height:1;flex:0 0 auto}
+  .mk.m1{background:#f59e0b}
+  .mk.m2{background:#217346}
+  .xls-legend{display:flex;gap:16px;flex-wrap:wrap;background:#fbfcfe;border-bottom:1px solid #e5e7eb;padding:7px 12px;font-size:11.5px;color:#475569}
+  .xls-legend span{display:inline-flex;align-items:center}
+  .xls-result{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#e8f5ec;border-top:1px solid #cfe8d6;padding:9px 12px;font-size:13px;color:#0b3d2a}
+  .xls-result .big{font-weight:800;font-size:15px;color:#0b5f32;background:#fff;border:1px solid #b7e0c4;border-radius:8px;padding:2px 10px}
+  .xls-grid tbody th.hhead{background:#dbe9e0}
   .xls-note{background:#f8fafc;border-top:1px solid #e5e7eb;padding:7px 12px;font-size:11.5px;color:#475569}
   .kbd{display:inline-block;font-family:"Cascadia Code",Consolas,monospace;font-size:11px;font-weight:700;
     background:#0f172a;color:#a7f3d0;border-bottom:2px solid #334155;border-radius:6px;padding:2px 7px;margin-left:2px;white-space:nowrap}
@@ -825,34 +836,52 @@ function rangeVals(range, sheet){
   for(let r=r1;r<=r2;r++){ for(let c=c1;c<=c2;c++){ const v=cellVal(colLetter(c)+r, sheet); if(v!=="") out.push(v); } }
   return out;
 }
+const _addrRe = /^([A-Z]{1,3})(\d+)$/;
+function expandRange(addr){
+  if(!addr.includes(":")) return [addr];
+  const p=addr.split(":"), a=_addrRe.exec(p[0]), b=_addrRe.exec(p[1]);
+  if(!a||!b) return [addr];
+  const c1=a[1].charCodeAt(0)-65, r1=+a[2], c2=b[1].charCodeAt(0)-65, r2=+b[2], o=[];
+  for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++) o.push(colLetter(c)+r);
+  return o;
+}
+function formulaRefs(formula, activeCell){
+  const noStr = (formula||"").replace(/"[^"]*"/g,"");          // বাদ: উদ্ধৃতির ভেতরের মান
+  const toks = noStr.match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g) || [];
+  const set = new Set();
+  toks.forEach(t=>{ expandRange(t).forEach(x=>{ if(x!==activeCell) set.add(x); }); });
+  return set;
+}
 function buildFlow(formula, hl, activeCell, sheet, note, res){
   if(formula){
-    const refs = (formula.match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g) || []).filter(r=>r!==activeCell);
+    const refs = (formula.replace(/"[^"]*"/g,"").match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g) || []).filter(r=>r!==activeCell);
     const ranges = refs.filter(r=>r.includes(":"));
     const inputs = ranges.length ? ranges : [...new Set(refs)];
     const inText = inputs.length ? inputs.join(", ") : "ইনপুট";
-    const inVal = inputs.map(r=> r.includes(":") ? rangeVals(r,sheet).slice(0,6).join(", ") : cellVal(r,sheet))
+    const inVal = inputs.map(r=> r.includes(":") ? rangeVals(r,sheet).slice(0,8).join(", ") : cellVal(r,sheet))
                         .filter(x=>x!=="").join(", ");
     const outVal = (res!==undefined && res!=="") ? res : (activeCell ? cellVal(activeCell,sheet) : "");
     return `
       <div class="flow">
-        <span class="node in">${inText}<small>${inVal||"ডেটা"}</small></span>
+        <span class="node in"><i class="mk m1">1</i>${inText}<small>${inVal||"ডেটা"}</small></span>
         <span class="arw">➜</span>
-        <span class="node fx">${formula}</span>
+        <span class="node fx">⚙ ${formula}</span>
         <span class="arw">➜</span>
-        <span class="node out">${activeCell||"ফলাফল"}<small>${outVal!==""? "= "+outVal : "ফলাফল"}</small></span>
+        <span class="node out"><i class="mk m2">2</i>${activeCell||"ফলাফল"}<small>${outVal!==""? "= "+outVal : "ফলাফল"}</small></span>
       </div>
-      <div class="flow-cap">➜ <b>${inText}</b> এর মান ফর্মুলা <b>${formula}</b> দিয়ে হিসাব করে <b>${activeCell||"ফলাফল"}</b> ঘরে ফলাফল <b>${outVal!==""? outVal : ""}</b> পাওয়া গেল।</div>`;
+      <div class="flow-cap">➜ (1) প্রথমে <b>${inText}</b> ঘরগুলো থেকে ডেটা নেওয়া হলো → (⚙) ফর্মুলা <b>${formula}</b> হিসাব করল → (2) <b>${activeCell||"ফলাফল"}</b> ঘরে ফলাফল <b>${outVal!==""? outVal : ""}</b> বসলো।</div>`;
   }
+  const cells = hl.map(a=>expandRange(a)).flat();
+  const preview = cells.map(a=>cellVal(a,sheet)).filter(x=>x!=="").slice(0,8).join(", ");
   return `
       <div class="flow">
-        <span class="node in">আগে (Before)<small>সাধারণ ডেটা</small></span>
+        <span class="node in"><i class="mk m1">1</i>আগে (Before)<small>${preview||"সাধারণ ডেটা"}</small></span>
         <span class="arw">➜</span>
-        <span class="node fx">${note||"ফিচার প্রয়োগ"}</span>
+        <span class="node fx">⚙ ${note||"ফিচার প্রয়োগ"}</span>
         <span class="arw">➜</span>
-        <span class="node out">পরে (After)<small>ফিচার প্রয়োগ হয়েছে</small></span>
+        <span class="node out"><i class="mk m2">2</i>পরে (After)<small>ফিচার প্রয়োগ হয়েছে</small></span>
       </div>
-      <div class="flow-cap">➜ <b>${note||"এই ফিচারটি"}</b> প্রয়োগ করার আগে ডেটা সহজ ছিল, পরে সেটি আরও পরিষ্কার ও বোধগম্য হয়ে গেল।</div>`;
+      <div class="flow-cap">➜ (1) আগে ডেটা ছিল সাধারণ → (⚙) <b>${note||"এই ফিচারটি"}</b> প্রয়োগ করা হলো → (2) এখন ডেটা আরও পরিষ্কার ও বোধগম্য।</div>`;
 }
 
 function colLetter(i){return String.fromCharCode(65+i);}
@@ -866,17 +895,28 @@ function renderExcelView(toolName){
   const res = spec[4];
   const activeCell = hl[0] || "";
 
+  // কোন ঘরগুলো ইনপুট, কোনটি ফলাফল — মার্ক করার জন্য
+  const inputSet = formula ? formulaRefs(formula, activeCell) : new Set();
+  const markSet = new Set();
+  if(!formula){ hl.forEach(a=>expandRange(a).forEach(x=>markSet.add(x))); }
+  const outVal = (res!==undefined && res!=="") ? res : (activeCell? cellVal(activeCell,sheet) : "");
+
   let headCells = `<th style="width:34px"></th>` + sheet.cols.map((c,i)=>`<th>${c}</th>`).join("");
   let body = `<tr><th>1</th>` + sheet.head.map(h=>`<td style="font-weight:700;background:#f7fafc;color:#111">${h}</td>`).join("") + `</tr>`;
   sheet.rows.forEach((row,r)=>{
     const rowNo = r+2;
     let tds = row.map((v,i)=>{
       const addr = colLetter(i)+rowNo;
-      const isHl = hl.includes(addr);
-      const isActive = addr===activeCell;
-      const shown = (isActive && res!==undefined && res!=="") ? res : v;
+      const isActive = formula ? (addr===activeCell) : false;
+      const isInput  = formula ? inputSet.has(addr) : markSet.has(addr);
+      const isHl     = hl.includes(addr) && !isActive && !isInput;
+      const shown = (isActive && outVal!=="") ? outVal : v;
       const isNum = typeof shown === "number";
-      return `<td class="${isActive?'active':''}${isHl&&!isActive?' hl':''}${isNum?' numtext':''}">${shown===""||shown===undefined?"&nbsp;":shown}</td>`;
+      let mk = "";
+      if(isInput) mk = `<i class="mk m1">1</i>`;
+      else if(isActive) mk = `<i class="mk m2">2</i>`;
+      const cls = [isActive?'xout':'', isInput?'xin':'', isHl?'hl':'', isNum?'numtext':''].filter(Boolean).join(' ');
+      return `<td class="${cls}">${mk}${shown===""||shown===undefined?"&nbsp;":shown}</td>`;
     }).join("");
     body += `<tr><th>${rowNo}</th>${tds}</tr>`;
   });
@@ -885,6 +925,13 @@ function renderExcelView(toolName){
   let lastRow = sheet.rows.length+1;
 
   const flowHTML = buildFlow(formula, hl, activeCell, sheet, note, res);
+
+  const legend = formula
+    ? `<div class="xls-legend"><span><i class="mk m1">1</i> <b>ইনপুট ডেটা</b> — যে ঘর থেকে হিসাব হয়</span><span><i class="mk m2">2</i> <b>ফলাফল</b> — ফর্মুলা এখানে বসে</span></div>`
+    : `<div class="xls-legend"><span><i class="mk m1">1</i> <b>এই ঘরগুলোতে</b> ফিচারটি প্রয়োগ হবে</span></div>`;
+  const resultBar = (formula && activeCell && outVal!=="")
+    ? `<div class="xls-result">✅ <b>ফলাফল:</b> <span class="big">${activeCell} = ${outVal}</span> <span style="color:#4b5563">← ফর্মুলা: ${formula}</span></div>`
+    : "";
 
   return `
   <div class="xls-wrap">
@@ -902,11 +949,13 @@ function renderExcelView(toolName){
       <div class="xls-fx">fx</div>
       <div class="xls-formula">${formula || "&nbsp;"}</div>
     </div>
+    ${legend}
     <table class="xls-grid">
       <thead><tr>${headCells}</tr></thead>
       <tbody>${body}</tbody>
     </table>
-    <div class="xls-note">📍 ${note} &nbsp;•&nbsp; রেঞ্জ: ${colLetter(0)}1:${lastCol}${lastRow}${formula?` &nbsp;•&nbsp; ফর্মুলা বার: <b>${formula}</b>`:""}</div>
+    ${resultBar}
+    <div class="xls-note">📍 ${note} &nbsp;•&nbsp; রেঞ্জ: ${colLetter(0)}1:${lastCol}${lastRow}</div>
   </div>
   ${flowHTML}`;
 }
