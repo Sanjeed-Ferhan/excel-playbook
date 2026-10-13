@@ -162,6 +162,35 @@
     color:#fff;width:36px;height:36px;border-radius:10px;box-shadow:0 4px 12px rgba(10,102,194,.5);transition:.15s}
   .signature a:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(10,102,194,.65)}
   @media(max-width:800px){.hero{grid-template-columns:1fr}.search{margin-left:0;min-width:100%}.wrap{padding:14px}}
+  /* ===== Practice sheet (mini Excel) ===== */
+  .prac-fab{position:fixed;right:22px;bottom:22px;z-index:60;border:0;cursor:pointer;font-family:inherit;
+    background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;font-weight:800;font-size:14px;
+    padding:13px 20px;border-radius:40px;box-shadow:0 12px 30px rgba(124,58,237,.5);transition:.15s}
+  .prac-fab:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(124,58,237,.6)}
+  .prac-backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:120;align-items:center;justify-content:center;padding:16px}
+  .prac{width:min(960px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:16px;box-shadow:0 25px 80px rgba(0,0,0,.4)}
+  .prac-top{display:flex;justify-content:space-between;gap:12px;padding:14px 18px;background:linear-gradient(100deg,#1f2937,#4c1d95);color:#fff;position:sticky;top:0;z-index:3}
+  .prac-top h3{margin:3px 0 0;font-size:17px}
+  .prac-path{font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .prac-task{margin:14px 18px 0;background:#f3eefe;border-left:4px solid #7c3aed;border-radius:8px;padding:10px 14px;font-size:13.5px;line-height:1.65}
+  .prac-bar{display:flex;gap:8px;align-items:center;margin:12px 18px 0;background:#fff;border:1px solid #cfd6dd;border-radius:8px;padding:6px 8px}
+  .prac-name{min-width:52px;text-align:center;font-weight:800;color:#0b5f32;background:#eef7f0;border:1px solid #cfe8d6;border-radius:6px;padding:5px 6px}
+  .prac-fx{color:#6b7280;font-style:italic;font-weight:700}
+  .prac-input{flex:1;min-width:120px;outline:0;font-family:"Cascadia Code",Consolas,monospace;font-size:13.5px;padding:7px 8px;background:#fafcfa;border:1px solid #e5e7eb;border-radius:6px}
+  .prac-scroll{overflow:auto;margin:12px 18px;border:1px solid #cfd6dd;border-radius:8px}
+  .prac-grid{border-collapse:collapse;font-size:13px;background:#fff}
+  .prac-grid th{background:#eef1f4;color:#4b5563;font-weight:600;border:1px solid #cfd6dd;padding:5px 9px;text-align:center;min-width:30px;position:sticky;top:0;z-index:1}
+  .prac-grid td{border:1px solid #dfe5ec;padding:6px 10px;min-width:80px;cursor:cell;white-space:nowrap;text-align:right;color:#0f172a}
+  .prac-grid td.sel{outline:2px solid #217346;outline-offset:-2px;background:#eef7f0!important}
+  .prac-grid td.tgt{background:#fff6e5}
+  .prac-grid td.err{color:#ef4444;font-weight:700}
+  .prac-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:0 18px 18px}
+  .prac-tools .btn{background:#eef2f7;color:#334155;font-weight:700}
+  .prac-tools .btn:hover{background:#e2e8f0}
+  .prac-msg{font-size:13px;font-weight:800}
+  .practice-launch{width:100%;border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:14px;color:#fff;
+    padding:12px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#06b6d4);box-shadow:0 8px 20px rgba(124,58,237,.35)}
+  .practice-launch:hover{filter:brightness(1.06)}
 </style>
 </head>
 <body>
@@ -248,6 +277,34 @@
       <div class="detail-row"><label>সহজ উদাহরণ (বাংলা)</label><div class="example" id="modalExampleBn"></div></div>
       <div class="detail-row"><label>Real Excel view — Excel in this example</label><div id="modalExcel"></div></div>
       <div class="detail-row"><label>Useful tip</label><div class="tip" id="modalTip"></div></div>
+      <div class="detail-row"><button class="practice-launch" onclick="practiceFromModal()">🎯 এই উদাহরণটি নিজে চেষ্টা করুন (Practice)</button></div>
+    </div>
+  </div>
+</div>
+
+<button class="prac-fab" onclick="openPractice()">🎯 Practice Sheet</button>
+
+<div class="prac-backdrop" id="pracBackdrop">
+  <div class="prac">
+    <div class="prac-top">
+      <div>
+        <div class="prac-path">Practice Sheet · নিজে চেষ্টা করুন</div>
+        <h3 id="pracTitle">Mini Excel — Practice Sheet</h3>
+      </div>
+      <button class="close" onclick="closePractice()">✕</button>
+    </div>
+    <div class="prac-task" id="pracTask"></div>
+    <div class="prac-bar">
+      <div class="prac-name" id="pracName">A1</div>
+      <div class="prac-fx">fx</div>
+      <input class="prac-input" id="pracInput" placeholder="মান বা ফর্মুলা লিখুন, যেমন =SUM(B2:B5) — তারপর Enter" />
+      <button class="btn primary" onclick="commitCell()">✔ নিশ্চিত</button>
+    </div>
+    <div class="prac-scroll"><table class="prac-grid" id="pracGrid"></table></div>
+    <div class="prac-tools">
+      <button class="btn" onclick="clearPractice()">🧹 Clear</button>
+      <button class="btn" onclick="loadSample()">📥 Sample Data</button>
+      <span class="prac-msg" id="pracMsg"></span>
     </div>
   </div>
 </div>
@@ -1022,6 +1079,7 @@ function render(){
 }
 
 function openModal(tab,group,tool){
+  curTool = tool[0];
   document.getElementById("modalPath").textContent=`${tab} › ${group}`;
   document.getElementById("modalTitle").textContent=tool[0];
   document.getElementById("modalDesc").textContent=tool[1];
@@ -1039,6 +1097,190 @@ function openModal(tab,group,tool){
 function closeModal(){document.getElementById("modalBackdrop").style.display="none";}
 document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+/* =====================================================================
+   Practice Sheet — একটি ছোট live spreadsheet + ফর্মুলা ইঞ্জিন
+   শিক্ষার্থী নিজে ঘরে সংখ্যা/ফর্মুলা লিখে সাথে সাথে ফলাফল দেখতে পারবে।
+   ===================================================================== */
+let curTool = "";
+let P = { cols:['A','B','C','D','E'], data:{}, sel:'A1', target:'', expected:undefined, tool:'', hint:'', rows:12 };
+
+function colToIdx(letters){ let n=0; for(const ch of letters.toUpperCase()) n=n*26+(ch.charCodeAt(0)-64); return n-1; }
+function idxToCol(n){ let s=''; n++; while(n>0){ s=String.fromCharCode(65+((n-1)%26))+s; n=Math.floor((n-1)/26); } return s; }
+function truthy(v){ if(typeof v==='boolean') return v; if(typeof v==='number') return v!==0; if(typeof v==='string') return v!=='' && v.toUpperCase()!=='FALSE'; return !!v; }
+function toStrV(v){ if(v===true) return 'TRUE'; if(v===false) return 'FALSE'; if(v===null||v===undefined) return ''; if(typeof v==='number') return String(Math.round(v*1e6)/1e6); return String(v); }
+function toNum(v){ if(v===true) return 1; if(v===false) return 0; if(typeof v==='number') return v; if(v===null||v===undefined||v==='') return 0; const n=Number(v); return isNaN(n)?NaN:n; }
+function toNumOrNull(v){ if(v===true) return 1; if(v===false) return 0; if(typeof v==='number') return isNaN(v)?null:v; if(v===null||v===undefined||v==='') return null; const n=Number(v); return isNaN(n)?null:n; }
+function cmpVals(op,a,b){
+  const an=toNumOrNull(a), bn=toNumOrNull(b), both=an!==null&&bn!==null;
+  const x = both? an : String(a).toLowerCase(), y = both? bn : String(b).toLowerCase();
+  switch(op){ case '=': return x===y; case '<>': return x!==y; case '<': return x<y; case '>': return x>y; case '<=': return x<=y; case '>=': return x>=y; }
+  return false;
+}
+function callFn(name,args){
+  const N=name.toUpperCase(); const nums=[];
+  args.forEach(a=>{ if(a&&a.__range){ a.__range.forEach(v=>{ const n=toNumOrNull(v); if(n!==null) nums.push(n); }); } else { const n=toNumOrNull(a); if(n!==null) nums.push(n); } });
+  const S=x=> x===undefined||x===null? '' : (typeof x==='boolean'? (x?'TRUE':'FALSE') : String(x));
+  switch(N){
+    case 'SUM': return nums.reduce((a,b)=>a+b,0);
+    case 'AVERAGE': return nums.length? nums.reduce((a,b)=>a+b,0)/nums.length : 0;
+    case 'MIN': return nums.length? Math.min.apply(null,nums) : 0;
+    case 'MAX': return nums.length? Math.max.apply(null,nums) : 0;
+    case 'COUNT': return nums.length;
+    case 'COUNTA': { let c=0; args.forEach(a=>{ if(a&&a.__range){ a.__range.forEach(v=>{ if(v!==''&&v!==undefined&&v!==null) c++; }); } else if(a!==''&&a!==undefined&&a!==null) c++; }); return c; }
+    case 'ROUND': { const d=args[1]!==undefined?toNum(args[1]):0, f=Math.pow(10,d); return Math.round(toNum(args[0])*f)/f; }
+    case 'ABS': return Math.abs(toNum(args[0]));
+    case 'SQRT': return Math.sqrt(toNum(args[0]));
+    case 'POWER': return Math.pow(toNum(args[0]),toNum(args[1]));
+    case 'PRODUCT': return nums.length? nums.reduce((a,b)=>a*b,1) : 0;
+    case 'MEDIAN': { if(!nums.length) return 0; const s=nums.slice().sort((a,b)=>a-b), m=Math.floor(s.length/2); return s.length%2? s[m] : (s[m-1]+s[m])/2; }
+    case 'IF': return truthy(args[0])? args[1] : (args[2]!==undefined? args[2] : false);
+    case 'AND': return args.every(truthy);
+    case 'OR': return args.some(truthy);
+    case 'NOT': return !truthy(args[0]);
+    case 'LEN': return S(args[0]).length;
+    case 'LEFT': return S(args[0]).slice(0, args[1]!==undefined? toNum(args[1]) : 1);
+    case 'RIGHT': { const s=S(args[0]); const n=args[1]!==undefined? toNum(args[1]) : 1; return s.slice(Math.max(0,s.length-n)); }
+    case 'UPPER': return S(args[0]).toUpperCase();
+    case 'LOWER': return S(args[0]).toLowerCase();
+    case 'TRIM': return S(args[0]).trim();
+    case 'CONCAT': case 'CONCATENATE':
+      return args.map(a=> a&&a.__range? a.__range.map(S).join('') : S(a)).join('');
+    default: return '#NAME?';
+  }
+}
+function lex(s){
+  const T=[]; let i=0;
+  while(i<s.length){
+    const ch=s[i];
+    if(ch===' '||ch==='\t'){ i++; continue; }
+    if((ch>='0'&&ch<='9')||ch==='.'){ let j=i; while(j<s.length && ((s[j]>='0'&&s[j]<='9')||s[j]==='.')) j++; T.push({t:'num',v:parseFloat(s.slice(i,j))}); i=j; continue; }
+    if(ch==='"'){ let j=i+1,str=''; while(j<s.length && s[j]!=='"'){ str+=s[j++]; } T.push({t:'str',v:str}); i=j+1; continue; }
+    if(/[A-Za-z]/.test(ch)){ let j=i; while(j<s.length && /[A-Za-z0-9_]/.test(s[j])) j++; T.push({t:'id',v:s.slice(i,j)}); i=j; continue; }
+    if('+-*/^(),:%&'.includes(ch)){ T.push({t:'op',v:ch}); i++; continue; }
+    if(ch==='<'||ch==='>'||ch==='='){ let op=ch; if(s[i+1]==='='||(ch==='<'&&s[i+1]==='>')){ op=ch+s[i+1]; i+=2; } else i++; T.push({t:'op',v:op}); continue; }
+    i++;
+  }
+  return T;
+}
+function evalTokens(T, getCell, getRange){
+  let p=0; const peek=()=>T[p];
+  function expr(){ return comparison(); }
+  function comparison(){ let a=concat(); const tk=peek(); if(tk&&tk.t==='op'&&['=','<','>','<=','>=','<>'].includes(tk.v)){ p++; const b=concat(); return cmpVals(tk.v,a,b); } return a; }
+  function concat(){ let a=addsub(); while(peek()&&peek().t==='op'&&peek().v==='&'){ p++; const b=addsub(); a = toStrV(a)+toStrV(b); } return a; }
+  function addsub(){ let a=muldiv(); while(peek()&&peek().t==='op'&&(peek().v==='+'||peek().v==='-')){ const op=T[p++].v; const b=muldiv(); a= op==='+'? toNum(a)+toNum(b) : toNum(a)-toNum(b); } return a; }
+  function muldiv(){ let a=power(); while(peek()&&peek().t==='op'&&(peek().v==='*'||peek().v==='/')){ const op=T[p++].v; const b=power(); a= op==='*'? toNum(a)*toNum(b) : toNum(a)/toNum(b); } return a; }
+  function power(){ let a=unary(); if(peek()&&peek().t==='op'&&peek().v==='^'){ p++; const b=unary(); return Math.pow(toNum(a),toNum(b)); } return a; }
+  function unary(){ const tk=peek(); if(tk&&tk.t==='op'&&(tk.v==='-'||tk.v==='+')){ p++; const v=unary(); return tk.v==='-'? -toNum(v): v; } return primary(); }
+  function primary(){
+    const tk=T[p++]; if(!tk) return 0;
+    if(tk.t==='num') return tk.v;
+    if(tk.t==='str') return tk.v;
+    if(tk.t==='op'&&tk.v==='('){ const v=expr(); if(peek()&&peek().v===')') p++; return v; }
+    if(tk.t==='id'){
+      const name=tk.v, up=name.toUpperCase();
+      if(peek()&&peek().t==='op'&&peek().v===':'){ p++; const t2=T[p++]; return {__range:getRange(up+':'+String(t2.v).toUpperCase())}; }
+      if(peek()&&peek().t==='op'&&peek().v==='('){ p++; const args=[]; if(peek()&&!(peek().t==='op'&&peek().v===')')){ while(true){ args.push(expr()); if(peek()&&peek().t==='op'&&peek().v===','){ p++; continue; } break; } } if(peek()&&peek().t==='op'&&peek().v===')') p++; return callFn(up,args); }
+      if(up==='TRUE') return true; if(up==='FALSE') return false;
+      if(/^[A-Z]{1,3}[0-9]+$/.test(up)) return getCell(up);
+      return name;
+    }
+    return 0;
+  }
+  return expr();
+}
+function evalCell(addr, seen){
+  seen = seen || {};
+  if(seen[addr]) return '#CIRC!';
+  const raw = P.data[addr];
+  if(raw===undefined || raw==='') return '';
+  if(String(raw)[0]==='='){
+    seen[addr]=1;
+    try{ return evalTokens(lex(String(raw).slice(1)), a=>evalCell(a,seen), r=>getRangeVals(r,seen)); }
+    catch(e){ return '#ERR!'; }
+    finally{ delete seen[addr]; }
+  }
+  const s=String(raw), n=Number(s);
+  return (s.trim()!=='' && !isNaN(n)) ? n : s;
+}
+function getRangeVals(range, seen){
+  const parts=range.split(':'), a=_addrRe.exec(parts[0]), b=_addrRe.exec(parts[1]);
+  if(!a||!b) return [];
+  const c1=colToIdx(a[1]), r1=+a[2], c2=colToIdx(b[1]), r2=+b[2], out=[];
+  for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++) out.push(evalCell(idxToCol(c)+r, seen));
+  return out;
+}
+function fmtCell(v){
+  if(v===true) return 'TRUE'; if(v===false) return 'FALSE';
+  if(typeof v==='number'){ if(!isFinite(v)) return '#DIV/0!'; return String(Math.round(v*1e6)/1e6); }
+  return String(v);
+}
+function renderPractice(){
+  let h='<thead><tr><th style="background:#dbe9e0"></th>'+P.cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
+  for(let r=1;r<=P.rows;r++){
+    h+=`<tr><th>${r}</th>`;
+    P.cols.forEach(c=>{
+      const addr=c+r, v=evalCell(addr), txt=fmtCell(v===''?'':v);
+      const cls=[addr===P.sel?'sel':'', addr===P.target?'tgt':'', (typeof v==='string'&&v[0]==='#')?'err':''].filter(Boolean).join(' ');
+      h+=`<td class="${cls}" onclick="selectCell('${addr}')">${txt===''?'&nbsp;':txt}</td>`;
+    });
+    h+='</tr>';
+  }
+  document.getElementById('pracGrid').innerHTML=h+'</tbody>';
+}
+function selectCell(addr){ P.sel=addr; document.getElementById('pracName').textContent=addr; document.getElementById('pracInput').value = String(P.data[addr]||''); renderPractice(); }
+function commitCell(){
+  P.data[P.sel]=document.getElementById('pracInput').value.trim();
+  checkTask(); renderPractice();
+}
+function checkTask(){
+  const msg=document.getElementById('pracMsg');
+  if(!P.target){ msg.textContent=''; return; }
+  const v=evalCell(P.target), exp=P.expected;
+  if(v==='' || (typeof v==='string' && v[0]==='#')){ msg.textContent='⏳ এখনো হয়নি — ফর্মুলা লিখুন'; msg.style.color='#b45309'; return; }
+  let ok;
+  if(exp!==undefined && exp!==''){ ok = (typeof exp==='number'&&typeof v==='number')? Math.abs(v-exp)<0.01 : String(v).trim().toLowerCase()===String(exp).trim().toLowerCase(); }
+  else { ok = true; }
+  if(ok){ msg.textContent='✅ ঠিক হয়েছে! অসাধারণ! 🎉'; msg.style.color='#16a34a'; }
+  else { msg.textContent='❌ এখনো মিলছে না — আবার চেষ্টা করুন'; msg.style.color='#dc2626'; }
+}
+function openPractice(cfg){
+  cfg = cfg || {};
+  const sheetKey = cfg.sheetKey || 'marks', sh = sheets[sheetKey] || sheets.marks;
+  P.cols = ['A','B','C','D','E'].slice(0, Math.max(3, sh.head.length));
+  P.data={}; P.target=cfg.target||''; P.hint=cfg.hint||''; P.tool=cfg.tool||'';
+  P.expected = cfg.expected;
+  sh.head.forEach((hh,i)=>{ P.data[idxToCol(i)+'1']=hh; });
+  sh.rows.forEach((row,ri)=>{ row.forEach((v,ci)=>{ if(v!==''&&v!==undefined&&v!==null) P.data[idxToCol(ci)+(ri+2)]=String(v); }); });
+  if(P.target) delete P.data[P.target];                 // শিক্ষার্থী নিজে পূরণ করবে
+  const trow = P.target? parseInt(P.target.replace(/\D/g,''),10)||0 : 0;
+  P.rows = Math.max(12, sh.rows.length+3, trow+1);
+  P.sel = P.target || 'A1';
+  document.getElementById('pracTitle').textContent = cfg.tool? (cfg.tool+' — Practice') : 'Mini Excel — Practice Sheet';
+  const inputs = (cfg.formula||'').replace(/"[^"]*"/g,'').match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g)||[];
+  document.getElementById('pracTask').innerHTML = P.target
+    ? `🎯 <b>${cfg.tool||''}</b> — <b>${P.target}</b> ঘরটি নির্বাচিত আছে (হলুদ)। টুলবারের ফর্মুলা বক্সে ফর্মুলাটি লিখে <b>Enter</b> চাপুন, যাতে <b>${P.target}</b> ঘরে সঠিক ফলাফল আসে।${P.hint? '<br><span style="color:#6b7280">📍 '+P.hint+'</span>':''}`
+    : `🎯 মুক্তভাবে অনুশীলন করুন — যেকোনো ঘরে ক্লিক করে ফর্মুলা বক্সে লিখুন। যেমন: <b>=SUM(A2:A5)</b>, <b>=AVERAGE(B2:B5)</b>, <b>=IF(A2&gt;=40,"Pass","Fail")</b>, <b>=B2*C2</b>।`;
+  document.getElementById('pracInput').value = String(P.data[P.sel]||'');
+  document.getElementById('pracName').textContent = P.sel;
+  const m=document.getElementById('pracMsg'); m.textContent = P.target? '⏳ আপনার উত্তর লিখুন…' : ''; m.style.color='#b45309';
+  document.getElementById('pracBackdrop').style.display='flex';
+  renderPractice();
+  setTimeout(()=>{ try{ document.getElementById('pracInput').focus(); }catch(e){} }, 60);
+}
+function closePractice(){ document.getElementById('pracBackdrop').style.display='none'; }
+function practiceFromModal(){
+  const s = viewMap[curTool];
+  if(!s){ openPractice({tool:curTool}); return; }
+  const sheetKey=s[0], formula=s[1]||'', hl=(s[2]||'').split(',').map(x=>x.trim()).filter(Boolean), note=s[3]||'', res=s[4];
+  const single = formula && hl[0] && !hl[0].includes(':') ? hl[0] : '';
+  openPractice({ sheetKey, target:single, expected:(single && res!==undefined)? res : undefined, tool:curTool, hint:note, formula });
+}
+function clearPractice(){ P.data={}; P.target=''; P.expected=undefined; document.getElementById('pracMsg').textContent=''; renderPractice(); document.getElementById('pracInput').value=''; }
+function loadSample(){ const key = P.tool ? (viewMap[P.tool]||['marks'])[0] : 'marks'; openPractice({ sheetKey:key }); }
+
+document.getElementById("pracInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); commitCell(); } });
+document.getElementById("pracBackdrop").addEventListener("click",e=>{ if(e.target.id==="pracBackdrop") closePractice(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closePractice(); } });
 searchBox.addEventListener("input",render);
 render();
 </script>
