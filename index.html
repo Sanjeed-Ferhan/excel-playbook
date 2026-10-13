@@ -128,6 +128,7 @@
   .xls-grid td.active{outline:2px solid #217346;outline-offset:-2px;background:#e8f5ec}
   .xls-grid td.xin{background:#fff6e5}
   .xls-grid td.xout{background:#e6f4ea;outline:2px solid #217346;outline-offset:-2px;font-weight:800}
+  .xls-grid td.err{color:#dc2626;font-weight:800;background:#fef2f2;text-align:center}
   .mk{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;font-style:normal;
     font-size:9px;font-weight:800;color:#fff;margin-right:5px;vertical-align:middle;line-height:1;flex:0 0 auto}
   .mk.m1{background:#f59e0b}
@@ -326,6 +327,29 @@
    Salary Sheet, Attendance, Mobile Contacts ইত্যাদি।
    ===================================================================== */
 const excel = {
+"Errors":{desc:"Types of Excel errors — what each error message means, why it happens, and how to fix it, with easy examples.",
+  groups:[
+    {name:"Error Messages",desc:"Common Excel error values, their meaning and how to fix them.",tools:[
+      ["#DIV/0!","You divided a number by zero or by an empty cell.","Dividing 10 by 0 gives #DIV/0!.","১০ কে ০ দিয়ে ভাগ করলে #DIV/0! আসে।","Wrap with IFERROR or make sure the divisor is not 0 or blank."],
+      ["#VALUE!","The formula uses the wrong type of data — usually text where a number is expected.","Text “ten” multiplied by 2 gives #VALUE!.","“ten” কে ২ দিয়ে গুণ করলে #VALUE! আসে।","Check the cell types; use VALUE(text) to convert text to a number."],
+      ["#NAME?","Excel cannot recognise a function name, or text is not written inside quotes.","=SUMM(A1:A3) gives #NAME? (correct is =SUM).","=SUMM(A1:A3) লিখলে #NAME? আসে (সঠিক =SUM)।","Fix the spelling and put text values inside \"double quotes\"."],
+      ["#REF!","A formula refers to a cell or column that has been deleted.","After deleting column C, =SUM(A1:C5) becomes #REF!.","কলাম C মুছে ফেললে =SUM(A1:C5) → #REF! হয়।","Undo the deletion or edit the formula to valid references."],
+      ["#NUM!","A number is not valid for the calculation, e.g., the square root of a negative number.","=SQRT(-9) gives #NUM!.","=SQRT(-9) দিলে #NUM! আসে।","Check the input numbers; the result must be a real number."],
+      ["#NULL!","Wrong range operator — usually a space between two ranges that do not intersect.","=SUM(A1 A3) gives #NULL!.","=SUM(A1 A3) লিখলে #NULL! আসে।","Use a colon (A1:A3) or a comma (A1,A3) between references."],
+      ["#####","The column is too narrow to display the value, or a date/time value is invalid.","A long number shows ##### until the column is widened.","সংখ্যা বড় হলে কলাম সরু থাকায় ##### দেখায়।","Widen the column (double-click its border) or fix the number format."],
+      ["#SPILL!","A dynamic-array formula cannot spill because the target area is not empty.","=SORT(A1:A10) hits data below and shows #SPILL!.","=SORT(A1:A10) এর নিচে ডেটা থাকলে #SPILL! আসে।","Clear the cells blocking the spill, or move the formula elsewhere."],
+      ["#CALC!","A calculation error, often an empty array passed to a function.","=FILTER(...) with no match can give #CALC!.","মিল না পেলে =FILTER(...) → #CALC! দিতে পারে।","Provide a default value (e.g., \"no data\") or check the criteria."],
+      ["#GETTING_DATA","Excel is still retrieving external or OLAP data.","A cell shows #GETTING_DATA while a query is loading.","Query লোড হওয়ার সময় সেলে #GETTING_DATA দেখায়।","Wait for the refresh to finish; check the data connection."]
+    ]},
+    {name:"Error Handling Functions",desc:"Functions that detect, replace or investigate errors.",tools:[
+      ["IFERROR","Returns a fallback value if the formula results in any error.","=IFERROR(A2/B2,0) shows 0 instead of #DIV/0!.","=IFERROR(A2/B2,0) — ভুল হলে #DIV/0! এর বদলে 0 দেখায়।","Handy for clean reports — but fix real errors, do not just hide them."],
+      ["IFNA","Returns a fallback only for #N/A (a value not found).","=IFNA(VLOOKUP(A2,D:E,2,0),\"not found\").","=IFNA(VLOOKUP(A2,D:E,2,0),\"পাওয়া যায়নি\")।","Use IFNA for lookups so other errors are not hidden."],
+      ["ISERROR / ISERR","Tests if a value is any error (ISERROR) or an error other than #N/A (ISERR).","=ISERROR(A2/B2) returns TRUE or FALSE.","=ISERROR(A2/B2) ভুল থাকলে TRUE দেয়।","Combine with IF: =IF(ISERROR(x),\"error\",x)."],
+      ["ERROR.TYPE","Returns a number that identifies the type of error.","=ERROR.TYPE(#REF!) returns 4.","=ERROR.TYPE(#REF!) → 4 দেয়।","Useful for advanced error-handling logic."],
+      ["Error Checking","Built-in tool that scans the sheet for common formula errors.","Formulas → Error Checking flags suspicious formulas.","Formulas ট্যাব → Error Checking দিয়ে সন্দেহজনক ফর্মুলা খুঁজুন।","Review each warning before accepting a suggested fix."]
+    ]}
+  ]
+},
 "File":{desc:"Backstage view for creating, opening, saving, printing, sharing, exporting, protecting, and configuring Excel workbooks.",
   groups:[{name:"Workbook Management",desc:"Core file operations.",tools:[
     ["New","Create a blank workbook or start from a template.","Start a new monthly home budget from a template.","নতুন একটি বাসার বাজেট ফাইল তৈরি করুন।","Use templates for repeatable formats."],
@@ -626,7 +650,7 @@ const excel = {
 }
 };
 
-const tabOrder = ["File","Home","Insert","Draw","Page Layout","Formulas","Data","Review","View","Automate","Help"];
+const tabOrder = ["File","Home","Insert","Draw","Page Layout","Formulas","Errors","Data","Review","View","Automate","Help"];
 
 /* =====================================================================
    Real Excel view: ছোট ছোট সহজ টেবিল + কোন ঘরে ফর্মুলা, তা দেখানো হয়।
@@ -652,11 +676,28 @@ const sheets = {
   cricket:{cols:["A","B"],head:["Player","Runs"],
     rows:[["Sakib",56],["Tamim",72],["Miraz",34],["Musfiq",48]]},
   savings:{cols:["A","B","C"],head:["Month","Income","Savings"],
-    rows:[["Jan",25000,5000],["Feb",26000,6000],["Mar",24000,4000],["","",""]]}
+    rows:[["Jan",25000,5000],["Feb",26000,6000],["Mar",24000,4000],["","",""]]},
+  errors:{cols:["A","B","C"],head:["Number","By","Result"],
+    rows:[[10,0,""],[8,2,""],["ten",2,""],[16,0,""],[-9,"",""],[5,3,""],[128,45,""],[20,7,""],[3,1,""],[9999999,1,""]]}
 };
 
 /* viewMap: toolName -> [sheetKey, formulaBarText, highlightCells(csv), note] */
 const viewMap = {
+ "#DIV/0!":["errors","=A2/B2","C2","১০ কে ০ দিয়ে ভাগ → #DIV/0!","#DIV/0!"],
+ "#VALUE!":["errors","=A4*2","C4","লেখাকে গুণ করলে → #VALUE!","#VALUE!"],
+ "#NAME?":["errors","=SUMM(A2:A3)","C3","ফাংশনের নাম ভুল → #NAME?","#NAME?"],
+ "#REF!":["errors","=A2+#REF!","C5","মুছে ফেলা ঘরের রেফারেন্স","#REF!"],
+ "#NUM!":["errors","=SQRT(A6)","C6","ঋণাত্মক সংখ্যার বর্গমূল → #NUM!","#NUM!"],
+ "#NULL!":["errors","=SUM(A2 A3)","C7","ভুল রেঞ্জ অপারেটর → #NULL!","#NULL!"],
+ "#####":["errors","","C8","কলাম সরু — চওড়া করুন","#####"],
+ "#SPILL!":["errors","=SORT(A8:A11)","C9","নিচে ডেটা থাকলে → #SPILL!","#SPILL!"],
+ "#CALC!":["errors","=FILTER(A2:A10,B2:B10=99)","C10","খালি অ্যারে → #CALC!","#CALC!"],
+ "#GETTING_DATA":["errors","","C11","বাইরের ডেটা এখনো আসছে","#GETTING_DATA"],
+ "IFERROR":["errors","=IFERROR(A2/B2,0)","C2","ভুল হলে বিকল্প মান",0],
+ "IFNA":["employees","=IFNA(XLOOKUP(\"E09\",A2:A4,B2:B4),\"পাওয়া যায়নি\")","E2","লুকআপ না পেলে বার্তা","পাওয়া যায়নি"],
+ "ISERROR / ISERR":["errors","=ISERROR(A4*2)","C4","ভুল হলে TRUE","TRUE"],
+ "ERROR.TYPE":["errors","=ERROR.TYPE(#REF!)","C5","ভুলের ধরন সংখ্যা (4)",4],
+ "Error Checking":["marks","","B2:B5","Excel নিজেই ভুল ফর্মুলা খুঁজে দেয়"],
  "New":["budget","","","Home Budget টেমপ্লেট থেকে নতুন ফাইল"],
  "Open":["budget","","","Recent সূচি থেকে ফাইল খোলা"],
  "Save / Save As":["budget","","","Ctrl+S দিয়ে সংরক্ষণ — File ট্যাবে নাম দেখা যায়"],
@@ -964,15 +1005,17 @@ function renderExcelView(toolName){
     const rowNo = r+2;
     let tds = row.map((v,i)=>{
       const addr = colLetter(i)+rowNo;
-      const isActive = formula ? (addr===activeCell) : false;
-      const isInput  = formula ? inputSet.has(addr) : markSet.has(addr);
+      const isActive = addr===activeCell;
+      const showRes = isActive && outVal!=="";
+      const isInput  = !showRes && (formula ? inputSet.has(addr) : markSet.has(addr));
       const isHl     = hl.includes(addr) && !isActive && !isInput;
-      const shown = (isActive && outVal!=="") ? outVal : v;
+      const shown = showRes ? outVal : v;
       const isNum = typeof shown === "number";
+      const isErr = typeof shown === "string" && shown.charAt(0)==="#";
       let mk = "";
       if(isInput) mk = `<i class="mk m1">1</i>`;
-      else if(isActive) mk = `<i class="mk m2">2</i>`;
-      const cls = [isActive?'xout':'', isInput?'xin':'', isHl?'hl':'', isNum?'numtext':''].filter(Boolean).join(' ');
+      else if(showRes && formula) mk = `<i class="mk m2">2</i>`;
+      const cls = [ (showRes&&!isErr)?'xout':'', isErr?'err':'', isInput?'xin':'', isHl?'hl':'', (isNum&&!isErr)?'numtext':'' ].filter(Boolean).join(' ');
       return `<td class="${cls}">${mk}${shown===""||shown===undefined?"&nbsp;":shown}</td>`;
     }).join("");
     body += `<tr><th>${rowNo}</th>${tds}</tr>`;
