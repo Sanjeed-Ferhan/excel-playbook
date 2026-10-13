@@ -36,6 +36,10 @@
   h1{font-size:20px;margin:0;background:linear-gradient(90deg,#fff,#b9f6d4,#a9c7ff,#f7c8e6);
      -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .subtitle{color:#d9d7d5;font-size:12px;margin-top:3px}
+  .koresearch-logo{margin-left:6px;display:flex;align-items:center;padding:5px 12px;background:#ffffff;
+    border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .koresearch-logo svg{height:32px;width:auto;display:block}
+  @media(max-width:820px){.koresearch-logo{display:none}}
   .search{
     margin-left:auto;min-width:300px;max-width:520px;flex:1;display:flex;align-items:center;background:#fff;
     border-radius:8px;padding:0 12px;box-shadow:0 0 0 2px rgba(139,92,246,.25)
@@ -160,6 +164,36 @@
     <div class="search">
       <span>🔎</span>
       <input id="searchBox" placeholder="Search e.g. XLOOKUP, Conditional Formatting, PivotTable, Freeze Panes..." />
+    </div>
+    <div class="koresearch-logo" title="KORE Search">
+      <svg viewBox="0 0 362 64" role="img" aria-label="KORE Search">
+        <defs>
+          <linearGradient id="koreMetal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset="0.30" stop-color="#d1d5db"/>
+            <stop offset="0.46" stop-color="#6b7280"/>
+            <stop offset="0.52" stop-color="#9ca3af"/>
+            <stop offset="0.62" stop-color="#f3f4f6"/>
+            <stop offset="0.80" stop-color="#9ca3af"/>
+            <stop offset="1" stop-color="#e5e7eb"/>
+          </linearGradient>
+          <linearGradient id="koreNavy" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4f46e5"/>
+            <stop offset="1" stop-color="#1e1b4b"/>
+          </linearGradient>
+        </defs>
+        <text x="2.5" y="57.5" font-family="'Arial Black',Impact,sans-serif" font-size="46" font-style="italic" font-weight="900" letter-spacing="1" fill="#4b5563" opacity="0.45">KORE</text>
+        <text x="1" y="56" font-family="'Arial Black',Impact,sans-serif" font-size="46" font-style="italic" font-weight="900" letter-spacing="1" fill="url(#koreMetal)" stroke="#4b5563" stroke-width="1.1" paint-order="stroke">KORE</text>
+        <g transform="translate(16,0)">
+          <g fill="#312e81">
+            <path d="M146 17 L173 5 L200 17 L173 29 Z"/>
+            <path d="M162 25 L184 25 L182 33 Q173 38 164 33 Z" fill="#1e1b4b"/>
+            <path d="M200 17 q7 1 7 8 v4" fill="none" stroke="#312e81" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="207" cy="31" r="3.2" fill="#e11d48"/>
+          </g>
+          <text x="150" y="56" font-family="'Arial Black',Impact,sans-serif" font-size="44" font-weight="900" letter-spacing="-0.5" fill="url(#koreNavy)">Search</text>
+        </g>
+      </svg>
     </div>
   </div>
   <nav class="tabs" id="tabs"></nav>
