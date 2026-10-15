@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Excel Ribbon Function Explorer</title>
+<title>Excel Ribbon Function Explorer v2</title>
 <style>
   *{box-sizing:border-box}
   :root{
@@ -200,7 +200,7 @@
     <div class="excel-logo">X</div>
     <div>
       <h1>Excel Ribbon Function Explorer</h1>
-      <div class="subtitle">সহজ দৈনন্দিন উদাহরণ • বাংলা ব্যাখ্যা • প্রতিটি ফিচারের real Excel view</div>
+      <div class="subtitle">Simple everyday examples · English explanations · real Excel view for every feature</div>
     </div>
     <div class="search">
       <span>🔎</span>
@@ -273,12 +273,11 @@
     </div>
     <div class="modal-body">
       <div class="detail-row"><label>What it does</label><p id="modalDesc"></p></div>
-      <div class="detail-row"><label>Shortcut key · শর্টকাট</label><div class="shortcut-row" id="modalKeys"></div></div>
-      <div class="detail-row"><label>Easy example (English)</label><div class="example en" id="modalExample"></div></div>
-      <div class="detail-row"><label>সহজ উদাহরণ (বাংলা)</label><div class="example" id="modalExampleBn"></div></div>
+      <div class="detail-row"><label>Shortcut key</label><div class="shortcut-row" id="modalKeys"></div></div>
+      <div class="detail-row"><label>Easy example</label><div class="example en" id="modalExample"></div></div>
       <div class="detail-row"><label>Real Excel view — Excel in this example</label><div id="modalExcel"></div></div>
       <div class="detail-row"><label>Useful tip</label><div class="tip" id="modalTip"></div></div>
-      <div class="detail-row"><button class="practice-launch" onclick="practiceFromModal()">🎯 এই উদাহরণটি নিজে চেষ্টা করুন (Practice)</button></div>
+      <div class="detail-row"><button class="practice-launch" onclick="practiceFromModal()">🎯 Try this example yourself (Practice)</button></div>
     </div>
   </div>
 </div>
@@ -289,7 +288,7 @@
   <div class="prac">
     <div class="prac-top">
       <div>
-        <div class="prac-path">Practice Sheet · নিজে চেষ্টা করুন</div>
+        <div class="prac-path">Practice Sheet · Try it yourself</div>
         <h3 id="pracTitle">Mini Excel — Practice Sheet</h3>
       </div>
       <button class="close" onclick="closePractice()">✕</button>
@@ -298,8 +297,8 @@
     <div class="prac-bar">
       <div class="prac-name" id="pracName">A1</div>
       <div class="prac-fx">fx</div>
-      <input class="prac-input" id="pracInput" placeholder="মান বা ফর্মুলা লিখুন, যেমন =SUM(B2:B5) — তারপর Enter" />
-      <button class="btn primary" onclick="commitCell()">✔ নিশ্চিত</button>
+      <input class="prac-input" id="pracInput" placeholder="Type a value or formula, e.g. =SUM(B2:B5) — then Enter" />
+      <button class="btn primary" onclick="commitCell()">✔ Confirm</button>
     </div>
     <div class="prac-scroll"><table class="prac-grid" id="pracGrid"></table></div>
     <div class="prac-tools">
@@ -322,330 +321,330 @@
 
 <script>
 /* =====================================================================
-   টুল ডেটা: [নাম, বর্ণনা, সহজ English উদাহরণ, সহজ বাংলা উদাহরণ, টিপ]
-   সব উদাহরণ দৈনন্দিন জীবন থেকে — স্কুলের Marks, দোকানের Bill, বাসার বাজেট,
-   Salary Sheet, Attendance, Mobile Contacts ইত্যাদি।
+   Tool data: [name, description, easy English example, tip]
+   All examples come from everyday life — school marks, shop bills, home budgets,
+   salary sheets, attendance, mobile contacts, etc.
    ===================================================================== */
 const excel = {
 "Errors":{desc:"Types of Excel errors — what each error message means, why it happens, and how to fix it, with easy examples.",
   groups:[
     {name:"Error Messages",desc:"Common Excel error values, their meaning and how to fix them.",tools:[
-      ["#DIV/0!","You divided a number by zero or by an empty cell.","Dividing 10 by 0 gives #DIV/0!.","১০ কে ০ দিয়ে ভাগ করলে #DIV/0! আসে।","Wrap with IFERROR or make sure the divisor is not 0 or blank."],
-      ["#VALUE!","The formula uses the wrong type of data — usually text where a number is expected.","Text “ten” multiplied by 2 gives #VALUE!.","“ten” কে ২ দিয়ে গুণ করলে #VALUE! আসে।","Check the cell types; use VALUE(text) to convert text to a number."],
-      ["#NAME?","Excel cannot recognise a function name, or text is not written inside quotes.","=SUMM(A1:A3) gives #NAME? (correct is =SUM).","=SUMM(A1:A3) লিখলে #NAME? আসে (সঠিক =SUM)।","Fix the spelling and put text values inside \"double quotes\"."],
-      ["#REF!","A formula refers to a cell or column that has been deleted.","After deleting column C, =SUM(A1:C5) becomes #REF!.","কলাম C মুছে ফেললে =SUM(A1:C5) → #REF! হয়।","Undo the deletion or edit the formula to valid references."],
-      ["#NUM!","A number is not valid for the calculation, e.g., the square root of a negative number.","=SQRT(-9) gives #NUM!.","=SQRT(-9) দিলে #NUM! আসে।","Check the input numbers; the result must be a real number."],
-      ["#NULL!","Wrong range operator — usually a space between two ranges that do not intersect.","=SUM(A1 A3) gives #NULL!.","=SUM(A1 A3) লিখলে #NULL! আসে।","Use a colon (A1:A3) or a comma (A1,A3) between references."],
-      ["#####","The column is too narrow to display the value, or a date/time value is invalid.","A long number shows ##### until the column is widened.","সংখ্যা বড় হলে কলাম সরু থাকায় ##### দেখায়।","Widen the column (double-click its border) or fix the number format."],
-      ["#SPILL!","A dynamic-array formula cannot spill because the target area is not empty.","=SORT(A1:A10) hits data below and shows #SPILL!.","=SORT(A1:A10) এর নিচে ডেটা থাকলে #SPILL! আসে।","Clear the cells blocking the spill, or move the formula elsewhere."],
-      ["#CALC!","A calculation error, often an empty array passed to a function.","=FILTER(...) with no match can give #CALC!.","মিল না পেলে =FILTER(...) → #CALC! দিতে পারে।","Provide a default value (e.g., \"no data\") or check the criteria."],
-      ["#GETTING_DATA","Excel is still retrieving external or OLAP data.","A cell shows #GETTING_DATA while a query is loading.","Query লোড হওয়ার সময় সেলে #GETTING_DATA দেখায়।","Wait for the refresh to finish; check the data connection."]
+      ["#DIV/0!","You divided a number by zero or by an empty cell.","Dividing 10 by 0 gives #DIV/0!.","Dividing 10 by 0 gives #DIV/0!.","Wrap with IFERROR or make sure the divisor is not 0 or blank."],
+      ["#VALUE!","The formula uses the wrong type of data — usually text where a number is expected.","Text “ten” multiplied by 2 gives #VALUE!.","Text “ten” multiplied by 2 gives #VALUE!.","Check the cell types; use VALUE(text) to convert text to a number."],
+      ["#NAME?","Excel cannot recognise a function name, or text is not written inside quotes.","=SUMM(A1:A3) gives #NAME? (correct is =SUM).","=SUMM(A1:A3) gives #NAME? (correct is =SUM).","Fix the spelling and put text values inside \"double quotes\"."],
+      ["#REF!","A formula refers to a cell or column that has been deleted.","After deleting column C, =SUM(A1:C5) becomes #REF!.","After deleting column C, =SUM(A1:C5) becomes #REF!.","Undo the deletion or edit the formula to valid references."],
+      ["#NUM!","A number is not valid for the calculation, e.g., the square root of a negative number.","=SQRT(-9) gives #NUM!.","=SQRT(-9) gives #NUM!.","Check the input numbers; the result must be a real number."],
+      ["#NULL!","Wrong range operator — usually a space between two ranges that do not intersect.","=SUM(A1 A3) gives #NULL!.","=SUM(A1 A3) gives #NULL!.","Use a colon (A1:A3) or a comma (A1,A3) between references."],
+      ["#####","The column is too narrow to display the value, or a date/time value is invalid.","A long number shows ##### until the column is widened.","A long number shows ##### until the column is widened.","Widen the column (double-click its border) or fix the number format."],
+      ["#SPILL!","A dynamic-array formula cannot spill because the target area is not empty.","=SORT(A1:A10) hits data below and shows #SPILL!.","=SORT(A1:A10) hits data below and shows #SPILL!.","Clear the cells blocking the spill, or move the formula elsewhere."],
+      ["#CALC!","A calculation error, often an empty array passed to a function.","=FILTER(...) with no match can give #CALC!.","=FILTER(...) with no match can give #CALC!.","Provide a default value (e.g., \"no data\") or check the criteria."],
+      ["#GETTING_DATA","Excel is still retrieving external or OLAP data.","A cell shows #GETTING_DATA while a query is loading.","A cell shows #GETTING_DATA while a query is loading.","Wait for the refresh to finish; check the data connection."]
     ]},
     {name:"Error Handling Functions",desc:"Functions that detect, replace or investigate errors.",tools:[
-      ["IFERROR","Returns a fallback value if the formula results in any error.","=IFERROR(A2/B2,0) shows 0 instead of #DIV/0!.","=IFERROR(A2/B2,0) — ভুল হলে #DIV/0! এর বদলে 0 দেখায়।","Handy for clean reports — but fix real errors, do not just hide them."],
-      ["IFNA","Returns a fallback only for #N/A (a value not found).","=IFNA(VLOOKUP(A2,D:E,2,0),\"not found\").","=IFNA(VLOOKUP(A2,D:E,2,0),\"পাওয়া যায়নি\")।","Use IFNA for lookups so other errors are not hidden."],
-      ["ISERROR / ISERR","Tests if a value is any error (ISERROR) or an error other than #N/A (ISERR).","=ISERROR(A2/B2) returns TRUE or FALSE.","=ISERROR(A2/B2) ভুল থাকলে TRUE দেয়।","Combine with IF: =IF(ISERROR(x),\"error\",x)."],
-      ["ERROR.TYPE","Returns a number that identifies the type of error.","=ERROR.TYPE(#REF!) returns 4.","=ERROR.TYPE(#REF!) → 4 দেয়।","Useful for advanced error-handling logic."],
-      ["Error Checking","Built-in tool that scans the sheet for common formula errors.","Formulas → Error Checking flags suspicious formulas.","Formulas ট্যাব → Error Checking দিয়ে সন্দেহজনক ফর্মুলা খুঁজুন।","Review each warning before accepting a suggested fix."]
+      ["IFERROR","Returns a fallback value if the formula results in any error.","=IFERROR(A2/B2,0) shows 0 instead of #DIV/0!.","=IFERROR(A2/B2,0) shows 0 instead of #DIV/0!.","Handy for clean reports — but fix real errors, do not just hide them."],
+      ["IFNA","Returns a fallback only for #N/A (a value not found).","=IFNA(VLOOKUP(A2,D:E,2,0),\"not found\").","=IFNA(VLOOKUP(A2,D:E,2,0),\"not found\").","Use IFNA for lookups so other errors are not hidden."],
+      ["ISERROR / ISERR","Tests if a value is any error (ISERROR) or an error other than #N/A (ISERR).","=ISERROR(A2/B2) returns TRUE or FALSE.","=ISERROR(A2/B2) returns TRUE or FALSE.","Combine with IF: =IF(ISERROR(x),\"error\",x)."],
+      ["ERROR.TYPE","Returns a number that identifies the type of error.","=ERROR.TYPE(#REF!) returns 4.","=ERROR.TYPE(#REF!) returns 4.","Useful for advanced error-handling logic."],
+      ["Error Checking","Built-in tool that scans the sheet for common formula errors.","Formulas → Error Checking flags suspicious formulas.","Formulas → Error Checking flags suspicious formulas.","Review each warning before accepting a suggested fix."]
     ]}
   ]
 },
 "File":{desc:"Backstage view for creating, opening, saving, printing, sharing, exporting, protecting, and configuring Excel workbooks.",
   groups:[{name:"Workbook Management",desc:"Core file operations.",tools:[
-    ["New","Create a blank workbook or start from a template.","Start a new monthly home budget from a template.","নতুন একটি বাসার বাজেট ফাইল তৈরি করুন।","Use templates for repeatable formats."],
-    ["Open","Open a recent, local, OneDrive, or SharePoint workbook.","Open last week's school result file.","গত সপ্তাহের স্কুলের রেজাল্ট ফাইল খুলুন।","Pin frequently used files in Recent."],
-    ["Save / Save As","Save changes or create a copy under another name or format.","Save the class list as Class6_Final.xlsx.","শ্রেণির তালিকাটি Class6_Final.xlsx নামে সংরক্ষণ করুন।","Use Save As to keep the original safe."],
-    ["Info","View workbook properties and protection, inspection, and version options.","Check the file details before emailing it to a friend.","বন্ধুকে পাঠানোর আগে ফাইলের তথ্য দেখে নিন।","Use Inspect Workbook before sharing."],
-    ["Print","Preview pages and control printer, copies, orientation, and scaling.","Fit the marksheet onto one A4 page.","মার্কশিটটি এক A4 পেজে ফিট করে প্রিন্ট করুন।","Always use Print Preview first."],
-    ["Share","Share a workbook and manage collaboration access.","Share the family budget with your spouse to edit together.","পরিবারের বাজেট স্ত্রী/স্বামীর সাথে শেয়ার করে একসাথে এডিট করুন।","Cloud storage is needed for live co-authoring."],
-    ["Export","Create PDF/XPS or change the file type.","Export the school report as PDF.","স্কুলের রিপোর্টটি PDF হিসেবে export করুন।","Check page layout before PDF export."],
-    ["Close","Close the current workbook without exiting Excel.","Close the finished bill file but keep Excel open.","শেষ হওয়া বিল ফাইল বন্ধ করুন, Excel চালু রাখুন।","Save first if prompted."],
-    ["Account","Manage Microsoft account, connected services, license, and theme.","Check which account is signed in for OneDrive.","কোন account দিয়ে sign-in করা আছে দেখুন।","Account options depend on organization policy."],
-    ["Options","Configure formulas, save behavior, language, ribbon, Quick Access Toolbar, add-ins, and Trust Center.","Turn on AutoRecover so work is not lost in a power cut.","বিদ্যুৎ গেলে কাজ যাতে হারিয়ে না যায় — AutoRecover চালু করুন।","Use Advanced options carefully."]
+    ["New","Create a blank workbook or start from a template.","Start a new monthly home budget from a template.","Start a new monthly home budget from a template.","Use templates for repeatable formats."],
+    ["Open","Open a recent, local, OneDrive, or SharePoint workbook.","Open last week's school result file.","Open last week's school result file.","Pin frequently used files in Recent."],
+    ["Save / Save As","Save changes or create a copy under another name or format.","Save the class list as Class6_Final.xlsx.","Save the class list as Class6_Final.xlsx.","Use Save As to keep the original safe."],
+    ["Info","View workbook properties and protection, inspection, and version options.","Check the file details before emailing it to a friend.","Check the file details before emailing it to a friend.","Use Inspect Workbook before sharing."],
+    ["Print","Preview pages and control printer, copies, orientation, and scaling.","Fit the marksheet onto one A4 page.","Fit the marksheet onto one A4 page.","Always use Print Preview first."],
+    ["Share","Share a workbook and manage collaboration access.","Share the family budget with your spouse to edit together.","Share the family budget with your spouse to edit together.","Cloud storage is needed for live co-authoring."],
+    ["Export","Create PDF/XPS or change the file type.","Export the school report as PDF.","Export the school report as PDF.","Check page layout before PDF export."],
+    ["Close","Close the current workbook without exiting Excel.","Close the finished bill file but keep Excel open.","Close the finished bill file but keep Excel open.","Save first if prompted."],
+    ["Account","Manage Microsoft account, connected services, license, and theme.","Check which account is signed in for OneDrive.","Check which account is signed in for OneDrive.","Account options depend on organization policy."],
+    ["Options","Configure formulas, save behavior, language, ribbon, Quick Access Toolbar, add-ins, and Trust Center.","Turn on AutoRecover so work is not lost in a power cut.","Turn on AutoRecover so work is not lost in a power cut.","Use Advanced options carefully."]
   ]}]},
 "Home":{desc:"The main editing tab for clipboard actions, formatting, alignment, number formats, styles, rows/columns, and quick data editing.",
   groups:[
     {name:"Clipboard",desc:"Move, copy, and reuse content and formatting.",tools:[
-      ["Paste","Insert copied or cut content into the selected cells.","Copy the total row and paste it into a new report.","মোটের সারিটি কপি করে নতুন রিপোর্টে পেস্ট করুন।","Use Paste Special for values, formats, or transpose."],
-      ["Cut","Move selected cells or objects to another location.","Move the ‘Address’ column to the first position.","‘ঠিকানা’ কলামটি একদম প্রথমে সরিয়ে নিন।","Ctrl+X is the shortcut."],
-      ["Copy","Copy selected cells, formulas, formatting, or objects.","Copy the total formula down the whole column.","মোটের ফর্মুলাটি পুরো কলামে কপি করুন।","References change when copied."],
-      ["Format Painter","Copy formatting from one place to another.","Give every heading the same bold blue style.","সব heading-এ একই bold নীল স্টাইল দিন।","Double-click to reuse many times."]
+      ["Paste","Insert copied or cut content into the selected cells.","Copy the total row and paste it into a new report.","Copy the total row and paste it into a new report.","Use Paste Special for values, formats, or transpose."],
+      ["Cut","Move selected cells or objects to another location.","Move the ‘Address’ column to the first position.","Move the ‘Address’ column to the first position.","Ctrl+X is the shortcut."],
+      ["Copy","Copy selected cells, formulas, formatting, or objects.","Copy the total formula down the whole column.","Copy the total formula down the whole column.","References change when copied."],
+      ["Format Painter","Copy formatting from one place to another.","Give every heading the same bold blue style.","Give every heading the same bold blue style.","Double-click to reuse many times."]
     ]},
     {name:"Font",desc:"Control text and cell visual formatting.",tools:[
-      ["Font & Size","Change typeface and text size.","Make the bill title bigger and bold.","বিলের শিরোনাম বড় ও মোটা করুন।","Keep report fonts consistent."],
-      ["Bold / Italic / Underline","Apply emphasis to text or numbers.","Bold the grand total row.","সর্বমোটের সারিটি বোল্ড করুন।","Use emphasis sparingly."],
-      ["Borders","Add or modify cell borders.","Draw a clean border around the marksheet.","মার্কশিটের চারপাশে পরিষ্কার বর্ডার দিন।","Use light borders."],
-      ["Fill Color","Change cell background color.","Highlight the cells you must fill in.","যেসব ঘর নিজে পূরণ করবেন সেগুলো রঙ করে চিহ্নিত করুন।","Same colour = same meaning."],
-      ["Font Color","Change text color.","Show the due amount in red.","বাকি টাকার পরিমাণ লাল রঙে দেখান।","Check contrast for readability."]
+      ["Font & Size","Change typeface and text size.","Make the bill title bigger and bold.","Make the bill title bigger and bold.","Keep report fonts consistent."],
+      ["Bold / Italic / Underline","Apply emphasis to text or numbers.","Bold the grand total row.","Bold the grand total row.","Use emphasis sparingly."],
+      ["Borders","Add or modify cell borders.","Draw a clean border around the marksheet.","Draw a clean border around the marksheet.","Use light borders."],
+      ["Fill Color","Change cell background color.","Highlight the cells you must fill in.","Highlight the cells you must fill in.","Same colour = same meaning."],
+      ["Font Color","Change text color.","Show the due amount in red.","Show the due amount in red.","Check contrast for readability."]
     ]},
     {name:"Alignment",desc:"Position, orient, and wrap content inside cells.",tools:[
-      ["Top/Middle/Bottom Align","Control vertical positioning inside cells.","Middle-align names in tall rows.","লম্বা সারিতে নাম মাঝ-উচ্চতায় বসান।","Useful with taller row height."],
-      ["Left/Center/Right Align","Control horizontal positioning.","Center the ‘Pass / Fail’ result.","‘Pass / Fail’ ফলাফল মাঝে বসান।","Numbers read best right-aligned."],
-      ["Orientation","Rotate or angle text.","Slant month names in a narrow table.","সরু টেবিলে মাসের নাম কাত করে লিখুন।","Angled text can reduce readability."],
-      ["Wrap Text","Show long content on multiple lines inside a cell.","Wrap a long address inside one cell.","লম্বা ঠিকানা একই ঘরে কয়েক লাইনে দেখান।","Row height may auto-adjust."],
-      ["Merge & Center","Combine adjacent cells and center the content.","Make a title across the whole class list.","পুরো ক্লাস লিস্টের উপরে একটি শিরোনাম বানান।","Avoid merged cells inside data tables."],
-      ["Increase / Decrease Indent","Shift cell content inward or outward.","Indent family members under a heading.","পরিবারের সদস্যদের নাম হেডিংয়ের নিচে ভেতরে সরান।","Indent affects looks only."]
+      ["Top/Middle/Bottom Align","Control vertical positioning inside cells.","Middle-align names in tall rows.","Middle-align names in tall rows.","Useful with taller row height."],
+      ["Left/Center/Right Align","Control horizontal positioning.","Center the ‘Pass / Fail’ result.","Center the ‘Pass / Fail’ result.","Numbers read best right-aligned."],
+      ["Orientation","Rotate or angle text.","Slant month names in a narrow table.","Slant month names in a narrow table.","Angled text can reduce readability."],
+      ["Wrap Text","Show long content on multiple lines inside a cell.","Wrap a long address inside one cell.","Wrap a long address inside one cell.","Row height may auto-adjust."],
+      ["Merge & Center","Combine adjacent cells and center the content.","Make a title across the whole class list.","Make a title across the whole class list.","Avoid merged cells inside data tables."],
+      ["Increase / Decrease Indent","Shift cell content inward or outward.","Indent family members under a heading.","Indent family members under a heading.","Indent affects looks only."]
     ]},
     {name:"Number",desc:"Control how numeric values are displayed.",tools:[
-      ["Number Format","Display values as Number, Currency, Date, Percentage, Text, or custom.","Show 0.873 as 87.3%.","0.873 কে 87.3% হিসেবে দেখান।","Formatting changes display, not value."],
-      ["Accounting / Currency","Format money values with symbols and decimals.","Show pocket money as ৳ 1,000.00.","হাতখরচ ৳ 1,000.00 হিসেবে দেখান।","Accounting aligns symbols and decimals."],
-      ["Percent Style","Display decimal numbers as percentages.","0.85 becomes 85%.","0.85 কে 85% বানান।","Do not multiply by 100 if already decimal."],
-      ["Comma Style","Add thousands separators.","1250000 becomes 1,250,000.","1250000 কে 1,250,000 দেখান।","Great for money columns."],
-      ["Increase / Decrease Decimal","Change visible decimal places.","Show marks average to one decimal.","গড় নম্বর এক দশমিক স্থানে দেখান।","Display rounding may differ from the value."]
+      ["Number Format","Display values as Number, Currency, Date, Percentage, Text, or custom.","Show 0.873 as 87.3%.","Show 0.873 as 87.3%.","Formatting changes display, not value."],
+      ["Accounting / Currency","Format money values with symbols and decimals.","Show pocket money as Tk 1,000.00.","Show pocket money as Tk 1,000.00.","Accounting aligns symbols and decimals."],
+      ["Percent Style","Display decimal numbers as percentages.","0.85 becomes 85%.","0.85 becomes 85%.","Do not multiply by 100 if already decimal."],
+      ["Comma Style","Add thousands separators.","1250000 becomes 1,250,000.","1250000 becomes 1,250,000.","Great for money columns."],
+      ["Increase / Decrease Decimal","Change visible decimal places.","Show marks average to one decimal.","Show marks average to one decimal.","Display rounding may differ from the value."]
     ]},
     {name:"Styles",desc:"Apply visual rules and reusable formatting.",tools:[
-      ["Conditional Formatting","Format cells automatically based on values or formulas.","Show marks under 40 in red automatically.","৪০-এর কম নম্বর স্বয়ংক্রিয়ভাবে লাল দেখান।","Use formula rules for advanced logic."],
-      ["Format as Table","Convert a range to an Excel Table with filters and structured references.","Turn the student list into a filterable table.","শিক্ষার্থীর তালিকাকে ফিল্টারযোগ্য টেবিলে বদলান।","Tables auto-expand with new rows."],
-      ["Cell Styles","Apply predefined styles such as Good, Bad, Neutral, Heading.","Use Input style for marks you type.","যে ঘরে নম্বর লিখবেন সেখানে Input স্টাইল দিন।","Custom styles standardise reports."]
+      ["Conditional Formatting","Format cells automatically based on values or formulas.","Show marks under 40 in red automatically.","Show marks under 40 in red automatically.","Use formula rules for advanced logic."],
+      ["Format as Table","Convert a range to an Excel Table with filters and structured references.","Turn the student list into a filterable table.","Turn the student list into a filterable table.","Tables auto-expand with new rows."],
+      ["Cell Styles","Apply predefined styles such as Good, Bad, Neutral, Heading.","Use Input style for marks you type.","Use Input style for marks you type.","Custom styles standardise reports."]
     ]},
     {name:"Cells",desc:"Insert, delete, and format cells, rows, columns, and sheets.",tools:[
-      ["Insert","Insert cells, rows, columns, or a new sheet.","Add a new column for ‘Remarks’.","‘Remarks’-এর জন্য নতুন একটি কলাম যোগ করুন।","Insertion can shift references."],
-      ["Delete","Delete cells, rows, columns, or sheets.","Remove the unused helper column.","অব্যবহৃত helper কলামটি মুছে ফেলুন।","Delete is different from Clear."],
-      ["Format","Adjust row height, column width, visibility, protection, and sheets.","AutoFit all columns after typing names.","নাম লেখার পরে সব কলাম AutoFit করুন।","Use Hide/Unhide for helper columns."]
+      ["Insert","Insert cells, rows, columns, or a new sheet.","Add a new column for ‘Remarks’.","Add a new column for ‘Remarks’.","Insertion can shift references."],
+      ["Delete","Delete cells, rows, columns, or sheets.","Remove the unused helper column.","Remove the unused helper column.","Delete is different from Clear."],
+      ["Format","Adjust row height, column width, visibility, protection, and sheets.","AutoFit all columns after typing names.","AutoFit all columns after typing names.","Use Hide/Unhide for helper columns."]
     ]},
     {name:"Editing",desc:"Quick calculation, filling, clearing, sorting, filtering, and finding.",tools:[
-      ["AutoSum","Quickly insert SUM, AVERAGE, COUNT, MAX, or MIN.","Add up the monthly grocery bill.","মাসের বাজার খরচ যোগ করুন।","Check the selected range before Enter."],
-      ["Fill","Copy or extend values, formulas, dates, and series.","Fill dates for the whole month.","পুরো মাসের তারিখ fill করুন।","Flash Fill speeds repetitive work."],
-      ["Clear","Remove contents, formats, notes, hyperlinks, or everything.","Clear last month's entered numbers.","গত মাসের লেখা সংখ্যাগুলো মুছুন।","Use Clear Contents to keep structure."],
-      ["Sort & Filter","Reorder records and filter rows by criteria.","Show only students who passed.","শুধু পাস করা শিক্ষার্থীদের দেখান।","Convert to Table for easy filtering."],
-      ["Find & Select","Find/replace text or select formulas, constants, blanks.","Find every cell containing ‘Dhaka’.","‘Dhaka’ লেখা প্রতিটি ঘর খুঁজুন।","Go To Special finds blanks and formulas."]
+      ["AutoSum","Quickly insert SUM, AVERAGE, COUNT, MAX, or MIN.","Add up the monthly grocery bill.","Add up the monthly grocery bill.","Check the selected range before Enter."],
+      ["Fill","Copy or extend values, formulas, dates, and series.","Fill dates for the whole month.","Fill dates for the whole month.","Flash Fill speeds repetitive work."],
+      ["Clear","Remove contents, formats, notes, hyperlinks, or everything.","Clear last month's entered numbers.","Clear last month's entered numbers.","Use Clear Contents to keep structure."],
+      ["Sort & Filter","Reorder records and filter rows by criteria.","Show only students who passed.","Show only students who passed.","Convert to Table for easy filtering."],
+      ["Find & Select","Find/replace text or select formulas, constants, blanks.","Find every cell containing ‘Dhaka’.","Find every cell containing ‘Dhaka’.","Go To Special finds blanks and formulas."]
     ]}
   ]},
 "Insert":{desc:"Add tables, PivotTables, charts, illustrations, links, text, symbols, and add-ins to a workbook.",
   groups:[
     {name:"Tables",desc:"Structure and summarize data.",tools:[
-      ["PivotTable","Create an interactive summary of large datasets.","Summarize shop sales by product and month.","দোকানের বিক্রি পণ্য ও মাস অনুযায়ী summarize করুন।","Keep source data clean with one header row."],
-      ["Recommended PivotTables","Let Excel suggest useful PivotTable layouts.","Get quick views from the class marks list.","ক্লাসের মার্ক লিস্ট থেকে দ্রুত view পান।","Use as a starting point."],
-      ["Table","Convert a range into a structured Excel Table.","Turn the shopping list into a dynamic table.","শপিং লিস্টকে dynamic টেবিলে বদলান।","Table names work in formulas."]
+      ["PivotTable","Create an interactive summary of large datasets.","Summarize shop sales by product and month.","Summarize shop sales by product and month.","Keep source data clean with one header row."],
+      ["Recommended PivotTables","Let Excel suggest useful PivotTable layouts.","Get quick views from the class marks list.","Get quick views from the class marks list.","Use as a starting point."],
+      ["Table","Convert a range into a structured Excel Table.","Turn the shopping list into a dynamic table.","Turn the shopping list into a dynamic table.","Table names work in formulas."]
     ]},
     {name:"Illustrations",desc:"Add visual objects.",tools:[
-      ["Pictures","Insert images from device or online sources.","Add a photo to a school project sheet.","স্কুল প্রজেক্ট শিটে একটি ছবি যোগ করুন।","Compress large images to reduce size."],
-      ["Shapes","Insert arrows, rectangles, callouts, flowchart shapes.","Draw an arrow to point at the total.","মোটের দিকে তীর দিয়ে নির্দেশ করুন।","Hold Shift to keep proportions."],
-      ["Icons","Insert scalable vector icons.","Add a cart icon to a shopping sheet.","শপিং শিটে কার্ট আইকন যোগ করুন।","Icons recolour without quality loss."],
-      ["SmartArt","Create hierarchy, process, and cycle diagrams.","Show the steps of a school admission process.","স্কুলে ভর্তির ধাপগুলো দেখান।","Use for communication, not analysis."],
-      ["Screenshot","Insert a screen clipping or available window.","Capture an app screen into a how-to sheet.","একটি অ্যাপ স্ক্রিন ক্যাপচার করে নির্দেশিকা শিটে বসান।","Remove private info before sharing."]
+      ["Pictures","Insert images from device or online sources.","Add a photo to a school project sheet.","Add a photo to a school project sheet.","Compress large images to reduce size."],
+      ["Shapes","Insert arrows, rectangles, callouts, flowchart shapes.","Draw an arrow to point at the total.","Draw an arrow to point at the total.","Hold Shift to keep proportions."],
+      ["Icons","Insert scalable vector icons.","Add a cart icon to a shopping sheet.","Add a cart icon to a shopping sheet.","Icons recolour without quality loss."],
+      ["SmartArt","Create hierarchy, process, and cycle diagrams.","Show the steps of a school admission process.","Show the steps of a school admission process.","Use for communication, not analysis."],
+      ["Screenshot","Insert a screen clipping or available window.","Capture an app screen into a how-to sheet.","Capture an app screen into a how-to sheet.","Remove private info before sharing."]
     ]},
     {name:"Charts",desc:"Visualize numerical data.",tools:[
-      ["Recommended Charts","Let Excel suggest chart types based on selected data.","Chart monthly pocket money vs spent.","মাসিক হাতখরচ বনাম খরচ চার্ট করুন।","Check the suggestion matches the question."],
-      ["Column / Bar Chart","Compare values across categories.","Compare sales of each shop item.","প্রতিটি পণ্যের বিক্রি তুলনা করুন।","Bar charts suit long names."],
-      ["Line / Area Chart","Show trends over time.","Track monthly electricity bill.","মাসিক বিদ্যুৎ বিলের ধারা দেখান।","Use a consistent time axis."],
-      ["Pie / Doughnut Chart","Show part-to-whole relationships.","Show home budget share by category.","বাসার বাজেটের ভাগ দেখান।","Best with a small number of slices."],
-      ["Hierarchy Chart","Create Treemap or Sunburst visuals.","Show expense split: Home > Food > Grocery.","খরচের ভাগ: বাসা > খাবার > বাজার।","Good for nested categories."],
-      ["Waterfall / Funnel / Stock / Surface / Radar","Use specialized visualizations.","Use a waterfall to explain how savings grew.","সঞ্চয় কীভাবে বাড়ল তা waterfall-এ দেখান।","Choose only when it clarifies."],
-      ["Combo Chart","Combine chart types with an optional secondary axis.","Sales columns with profit-percent line.","বিক্রি কলামের সাথে লাভের শতকরা লাইন।","Avoid misleading scale choices."],
-      ["PivotChart","Create charts connected to PivotTables.","Interactive sales dashboard with buttons.","বাটনসহ ইন্টারঅ্যাকটিভ বিক্রি ড্যাশবোর্ড।","Add slicers for filtering."]
+      ["Recommended Charts","Let Excel suggest chart types based on selected data.","Chart monthly pocket money vs spent.","Chart monthly pocket money vs spent.","Check the suggestion matches the question."],
+      ["Column / Bar Chart","Compare values across categories.","Compare sales of each shop item.","Compare sales of each shop item.","Bar charts suit long names."],
+      ["Line / Area Chart","Show trends over time.","Track monthly electricity bill.","Track monthly electricity bill.","Use a consistent time axis."],
+      ["Pie / Doughnut Chart","Show part-to-whole relationships.","Show home budget share by category.","Show home budget share by category.","Best with a small number of slices."],
+      ["Hierarchy Chart","Create Treemap or Sunburst visuals.","Show expense split: Home > Food > Grocery.","Show expense split: Home > Food > Grocery.","Good for nested categories."],
+      ["Waterfall / Funnel / Stock / Surface / Radar","Use specialized visualizations.","Use a waterfall to explain how savings grew.","Use a waterfall to explain how savings grew.","Choose only when it clarifies."],
+      ["Combo Chart","Combine chart types with an optional secondary axis.","Sales columns with profit-percent line.","Sales columns with profit-percent line.","Avoid misleading scale choices."],
+      ["PivotChart","Create charts connected to PivotTables.","Interactive sales dashboard with buttons.","Interactive sales dashboard with buttons.","Add slicers for filtering."]
     ]},
     {name:"Sparklines",desc:"Tiny charts embedded inside cells.",tools:[
-      ["Line / Column / Win-Loss Sparkline","Show compact trends within table rows.","Show each student's monthly marks trend.","প্রতিটি শিক্ষার্থীর মাসিক নম্বরের ধারা দেখান।","Keep axis settings equal for fair compare."]
+      ["Line / Column / Win-Loss Sparkline","Show compact trends within table rows.","Show each student's monthly marks trend.","Show each student's monthly marks trend.","Keep axis settings equal for fair compare."]
     ]},
     {name:"Filters",desc:"Add interactive visual filtering.",tools:[
-      ["Slicer","Filter Tables and PivotTables using clickable buttons.","Filter the sales dashboard by city.","শহর অনুযায়ী বিক্রি ড্যাশবোর্ড ফিল্টার করুন।","One slicer can control many PivotTables."],
-      ["Timeline","Filter PivotTables by dates using a visual timeline.","Filter sales data by month.","মাস অনুযায়ী বিক্রি ডেটা ফিল্টার করুন।","Needs a valid date field."]
+      ["Slicer","Filter Tables and PivotTables using clickable buttons.","Filter the sales dashboard by city.","Filter the sales dashboard by city.","One slicer can control many PivotTables."],
+      ["Timeline","Filter PivotTables by dates using a visual timeline.","Filter sales data by month.","Filter sales data by month.","Needs a valid date field."]
     ]},
     {name:"Links & Text",desc:"Connect content and add labels or text objects.",tools:[
-      ["Link","Create hyperlinks to webpages, files, email, or places.","Link a topic to a helpful website.","একটি টপিককে সহায়ক ওয়েবসাইটের সাথে লিংক করুন।","Internal links help navigation."],
-      ["Text Box","Insert free-positioned text.","Add a note on the dashboard sheet.","ড্যাশবোর্ড শিটে একটি নোট যোগ করুন।","Use for presentation, not data."],
-      ["Header & Footer","Add repeating print information such as page numbers and file names.","Add the school name and page number to printouts.","প্রিন্টে স্কুলের নাম ও পেজ নম্বর যোগ করুন।","Visible in Page Layout or print."],
-      ["WordArt","Insert stylized decorative text.","Make a fun title for a poster.","পোস্টারের জন্য মজার শিরোনাম বানান।","Use sparingly in reports."],
-      ["Signature Line","Add a signature placeholder for digital-signature workflows.","Prepare an approval sheet for parents.","অভিভাবকের অনুমোদনের জন্য signature যোগ করুন।","Digital signing varies by setup."]
+      ["Link","Create hyperlinks to webpages, files, email, or places.","Link a topic to a helpful website.","Link a topic to a helpful website.","Internal links help navigation."],
+      ["Text Box","Insert free-positioned text.","Add a note on the dashboard sheet.","Add a note on the dashboard sheet.","Use for presentation, not data."],
+      ["Header & Footer","Add repeating print information such as page numbers and file names.","Add the school name and page number to printouts.","Add the school name and page number to printouts.","Visible in Page Layout or print."],
+      ["WordArt","Insert stylized decorative text.","Make a fun title for a poster.","Make a fun title for a poster.","Use sparingly in reports."],
+      ["Signature Line","Add a signature placeholder for digital-signature workflows.","Prepare an approval sheet for parents.","Prepare an approval sheet for parents.","Digital signing varies by setup."]
     ]},
     {name:"Symbols",desc:"Insert equations and special characters.",tools:[
-      ["Equation","Insert mathematical equations.","Write the area formula in a math note.","ম্যাথ নোটে ক্ষেত্রফলের সূত্র লিখুন।","For display; calculations need formulas."],
-      ["Symbol","Insert special characters not easily typed.","Insert ° for temperature or ৳ for taka.","তাপমাত্রার ° বা টাকার ৳ চিহ্ন বসান।","Search fonts like Segoe UI Symbol."]
+      ["Equation","Insert mathematical equations.","Write the area formula in a math note.","Write the area formula in a math note.","For display; calculations need formulas."],
+      ["Symbol","Insert special characters not easily typed.","Insert ° for temperature or Tk for taka.","Insert ° for temperature or Tk for taka.","Search fonts like Segoe UI Symbol."]
     ]},
     {name:"Add-ins",desc:"Extend Excel with additional tools.",tools:[
-      ["Get Add-ins","Browse and install supported Office add-ins.","Install a calendar or map add-in.","একটি ক্যালেন্ডার বা ম্যাপ add-in ইনস্টল করুন।","Policy may restrict installations."],
-      ["My Add-ins","Open or manage installed add-ins.","Launch a previously installed add-in.","আগে ইনস্টল করা add-in খুলুন।","Review permissions before use."]
+      ["Get Add-ins","Browse and install supported Office add-ins.","Install a calendar or map add-in.","Install a calendar or map add-in.","Policy may restrict installations."],
+      ["My Add-ins","Open or manage installed add-ins.","Launch a previously installed add-in.","Launch a previously installed add-in.","Review permissions before use."]
     ]}
   ]},
 "Draw":{desc:"Use digital ink for annotations, sketches, handwriting, and ink-based analysis, especially with a pen or touch device.",
   groups:[{name:"Drawing Tools",desc:"Write and draw directly on the worksheet.",tools:[
-    ["Select","Select ink objects for moving, resizing, or editing.","Select several handwritten notes together.","হাতে লেখা কয়েকটি নোট একসাথে সিলেক্ট করুন।","Lasso helps with irregular groups."],
-    ["Eraser","Erase ink strokes.","Remove an old annotation.","পুরনো একটি মন্তব্য মুছে ফেলুন।","Eraser modes vary by device."],
-    ["Pen / Pencil / Highlighter","Draw or annotate using customizable ink.","Highlight an important number in the review.","রিভিউতে একটি গুরুত্বপূর্ণ সংখ্যা হাইলাইট করুন।","Change thickness and colour easily."],
-    ["Lasso Select","Select ink by drawing around it.","Select one group of handwritten notes.","হাতে লেখা একটি নোট-গ্রুপ ঘিরে সিলেক্ট করুন।","Useful on touch devices."],
-    ["Ink to Shape","Convert hand-drawn shapes into clean Office shapes.","Draw a rough box and convert it to a neat one.","এলোমেলো বক্স এঁকে পরিষ্কার বক্সে বদলান।","Works with simple shapes."],
-    ["Ink to Math","Convert handwritten math into formatted equations.","Turn a written fraction into an equation.","হাতে লেখা ভগ্নাংশকে equation-এ বদলান।","Availability differs by version."],
-    ["Drawing Canvas","Create a dedicated area for ink objects.","Sketch a plan without touching cells.","ঘর ছাড়াই একটি পরিকল্পনা আঁকুন।","Feature availability varies by build."]
+    ["Select","Select ink objects for moving, resizing, or editing.","Select several handwritten notes together.","Select several handwritten notes together.","Lasso helps with irregular groups."],
+    ["Eraser","Erase ink strokes.","Remove an old annotation.","Remove an old annotation.","Eraser modes vary by device."],
+    ["Pen / Pencil / Highlighter","Draw or annotate using customizable ink.","Highlight an important number in the review.","Highlight an important number in the review.","Change thickness and colour easily."],
+    ["Lasso Select","Select ink by drawing around it.","Select one group of handwritten notes.","Select one group of handwritten notes.","Useful on touch devices."],
+    ["Ink to Shape","Convert hand-drawn shapes into clean Office shapes.","Draw a rough box and convert it to a neat one.","Draw a rough box and convert it to a neat one.","Works with simple shapes."],
+    ["Ink to Math","Convert handwritten math into formatted equations.","Turn a written fraction into an equation.","Turn a written fraction into an equation.","Availability differs by version."],
+    ["Drawing Canvas","Create a dedicated area for ink objects.","Sketch a plan without touching cells.","Sketch a plan without touching cells.","Feature availability varies by build."]
   ]}]},
 "Page Layout":{desc:"Control workbook appearance for printing, including themes, page setup, scaling, and object arrangement.",
   groups:[
     {name:"Themes",desc:"Apply coordinated fonts, colors, and effects.",tools:[
-      ["Themes","Apply a complete document theme.","Give the whole project one consistent look.","পুরো প্রজেক্টে একই রকম রূপ দিন।","Themes affect charts and shapes."],
-      ["Colors","Change the theme color palette.","Use bright, friendly colours for a class chart.","ক্লাসের চার্টে উজ্জ্বল রঙ ব্যবহার করুন।","Theme colours update objects together."],
-      ["Fonts","Change heading/body theme fonts.","Make all headings the same font.","সব শিরোনাম একই ফন্টে আনুন।","Better than changing each object."],
-      ["Effects","Change theme effects for shapes and objects.","Give shapes a softer 3D look.","শেপগুলোকে হালকা 3D রূপ দিন।","Mainly visual."]
+      ["Themes","Apply a complete document theme.","Give the whole project one consistent look.","Give the whole project one consistent look.","Themes affect charts and shapes."],
+      ["Colors","Change the theme color palette.","Use bright, friendly colours for a class chart.","Use bright, friendly colours for a class chart.","Theme colours update objects together."],
+      ["Fonts","Change heading/body theme fonts.","Make all headings the same font.","Make all headings the same font.","Better than changing each object."],
+      ["Effects","Change theme effects for shapes and objects.","Give shapes a softer 3D look.","Give shapes a softer 3D look.","Mainly visual."]
     ]},
     {name:"Page Setup",desc:"Define how sheets print.",tools:[
-      ["Margins","Set printable page margins.","Use narrow margins to fit a wide table.","চওড়া টেবিল ফিট করতে সরু margin ব্যবহার করুন।","Check printer limits."],
-      ["Orientation","Switch between Portrait and Landscape.","Print a wide marksheet in Landscape.","চওড়া মার্কশিট Landscape-এ প্রিন্ট করুন।","Set per worksheet."],
-      ["Size","Select paper size.","Print on A4 paper.","A4 কাগজে প্রিন্ট করুন।","Match your printer or PDF size."],
-      ["Print Area","Define only the range to print.","Print just the summary section.","শুধু সারসংক্ষেপ অংশটুকু প্রিন্ট করুন।","Clear it if printouts look wrong."],
-      ["Breaks","Insert, remove, or reset page breaks.","Start each class on a new page.","প্রতিটি ক্লাস নতুন পেজ থেকে শুরু করুন।","Use Page Break Preview."],
-      ["Background","Add a worksheet background image.","Use a soft background for display only.","শুধু দেখানোর জন্য হালকা ব্যাকগ্রাউন্ড বসান।","Backgrounds do not print."],
-      ["Print Titles","Repeat selected rows or columns on every printed page.","Repeat the header row on every page.","প্রতিটি পেজে হেডার সারি repeat করুন।","Great for long lists."]
+      ["Margins","Set printable page margins.","Use narrow margins to fit a wide table.","Use narrow margins to fit a wide table.","Check printer limits."],
+      ["Orientation","Switch between Portrait and Landscape.","Print a wide marksheet in Landscape.","Print a wide marksheet in Landscape.","Set per worksheet."],
+      ["Size","Select paper size.","Print on A4 paper.","Print on A4 paper.","Match your printer or PDF size."],
+      ["Print Area","Define only the range to print.","Print just the summary section.","Print just the summary section.","Clear it if printouts look wrong."],
+      ["Breaks","Insert, remove, or reset page breaks.","Start each class on a new page.","Start each class on a new page.","Use Page Break Preview."],
+      ["Background","Add a worksheet background image.","Use a soft background for display only.","Use a soft background for display only.","Backgrounds do not print."],
+      ["Print Titles","Repeat selected rows or columns on every printed page.","Repeat the header row on every page.","Repeat the header row on every page.","Great for long lists."]
     ]},
     {name:"Scale to Fit",desc:"Control printed scaling.",tools:[
-      ["Width / Height","Fit output to a specified number of pages.","Fit a wide bill onto 1 page across.","চওড়া বিল ১ পেজে ফিট করুন।","Over-scaling can get tiny."],
-      ["Scale","Set print scaling percentage.","Print at 90% size.","৯০% সাইজে প্রিন্ট করুন।","Preview before finalising."]
+      ["Width / Height","Fit output to a specified number of pages.","Fit a wide bill onto 1 page across.","Fit a wide bill onto 1 page across.","Over-scaling can get tiny."],
+      ["Scale","Set print scaling percentage.","Print at 90% size.","Print at 90% size.","Preview before finalising."]
     ]},
     {name:"Sheet Options",desc:"Control gridlines and headings.",tools:[
-      ["Gridlines View / Print","Show or hide gridlines on screen and print.","Hide gridlines on a neat marksheet.","পরিষ্কার মার্কশিটে gridline লুকান।","Use borders for structure."],
-      ["Headings View / Print","Show or print row and column headings.","Print row/column letters for a worksheet task.","কাজের শিটে row/column অক্ষর প্রিন্ট করুন।","Usually off for reports."]
+      ["Gridlines View / Print","Show or hide gridlines on screen and print.","Hide gridlines on a neat marksheet.","Hide gridlines on a neat marksheet.","Use borders for structure."],
+      ["Headings View / Print","Show or print row and column headings.","Print row/column letters for a worksheet task.","Print row/column letters for a worksheet task.","Usually off for reports."]
     ]},
     {name:"Arrange",desc:"Position and layer visual objects.",tools:[
-      ["Bring Forward / Send Backward","Change object stacking order.","Place the total label above the background.","মোটের লেবেল ব্যাকগ্রাউন্ডের সামনে আনুন।","Use Selection Pane for layering."],
-      ["Selection Pane","List and manage sheet objects.","Find a hidden chart or shape.","লুকানো চার্ট বা শেপ খুঁজুন।","Rename objects for clarity."],
-      ["Align","Align multiple objects precisely.","Line up dashboard cards neatly.","ড্যাশবোর্ড কার্ডগুলো সুন্দরভাবে সারিবদ্ধ করুন।","Use Distribute for equal spacing."],
-      ["Group","Group objects so they move together.","Group a chart with its title box.","চার্ট ও তার শিরোনাম একসাথে group করুন।","Ungroup for individual edits."],
-      ["Rotate","Rotate or flip objects.","Turn an arrow to point the right way.","তীরটি ঠিক দিকে ঘুরিয়ে নিন।","Hold Shift for controlled rotation."]
+      ["Bring Forward / Send Backward","Change object stacking order.","Place the total label above the background.","Place the total label above the background.","Use Selection Pane for layering."],
+      ["Selection Pane","List and manage sheet objects.","Find a hidden chart or shape.","Find a hidden chart or shape.","Rename objects for clarity."],
+      ["Align","Align multiple objects precisely.","Line up dashboard cards neatly.","Line up dashboard cards neatly.","Use Distribute for equal spacing."],
+      ["Group","Group objects so they move together.","Group a chart with its title box.","Group a chart with its title box.","Ungroup for individual edits."],
+      ["Rotate","Rotate or flip objects.","Turn an arrow to point the right way.","Turn an arrow to point the right way.","Hold Shift for controlled rotation."]
     ]}
   ]},
 "Formulas":{desc:"Create, audit, and manage calculations, functions, names, and calculation behavior.",
   groups:[
     {name:"Function Library",desc:"Find and insert Excel functions by category.",tools:[
-      ["Insert Function","Search for and insert a function using a dialog.","Find the right average function by name.","নাম দিয়ে সঠিক গড় ফাংশন খুঁজে বের করুন।","The dialog explains each input."],
-      ["AutoSum","Quick access to common aggregation functions.","Insert SUM under the bill column.","বিলের কলামের নিচে SUM বসান।","Verify the guessed range."],
-      ["Financial","Access financial functions such as NPV, IRR, PMT, FV.","Calculate the EMI of a home loan.","বাসার ঋণের কিস্তি (EMI) হিসাব করুন।","Confirm payment timing."],
-      ["Logical","Use IF, IFS, AND, OR, NOT, SWITCH and related logic.","Show ‘Pass’ or ‘Fail’ from marks.","নম্বর থেকে ‘Pass’/‘Fail’ দেখান।","Keep logic readable with LET."],
-      ["Text","Use LEFT, RIGHT, MID, TEXT, TEXTJOIN, TRIM, SUBSTITUTE.","Split ‘Dhaka-1207’ into district and code.","‘Dhaka-1207’ কে জেলা ও কোডে ভাগ করুন।","TEXT returns text, not numbers."],
-      ["Date & Time","Use TODAY, NOW, DATE, YEAR, MONTH, EOMONTH, WORKDAY.","Count days left until an exam.","পরীক্ষা পর্যন্ত কত দিন বাকি তা গুনুন।","Dates are stored as numbers."],
-      ["Lookup & Reference","Use XLOOKUP, VLOOKUP, INDEX, MATCH, FILTER, etc.","Find a student's section from their roll.","রোল দিয়ে শিক্ষার্থীর সেকশন বের করুন।","Prefer XLOOKUP when available."],
-      ["Math & Trig","Use SUMIFS, ROUND, ABS, SUBTOTAL, AGGREGATE and more.","Add only the ‘Food’ expense rows.","শুধু ‘খাবার’ খরচের সারিগুলো যোগ করুন।","SUMIFS handles many conditions."],
-      ["More Functions","Access Statistical, Engineering, Information, and other categories.","Find the standard deviation of marks.","নম্বরগুলোর standard deviation বের করুন।","Choose functions by need."]
+      ["Insert Function","Search for and insert a function using a dialog.","Find the right average function by name.","Find the right average function by name.","The dialog explains each input."],
+      ["AutoSum","Quick access to common aggregation functions.","Insert SUM under the bill column.","Insert SUM under the bill column.","Verify the guessed range."],
+      ["Financial","Access financial functions such as NPV, IRR, PMT, FV.","Calculate the EMI of a home loan.","Calculate the EMI of a home loan.","Confirm payment timing."],
+      ["Logical","Use IF, IFS, AND, OR, NOT, SWITCH and related logic.","Show ‘Pass’ or ‘Fail’ from marks.","Show ‘Pass’ or ‘Fail’ from marks.","Keep logic readable with LET."],
+      ["Text","Use LEFT, RIGHT, MID, TEXT, TEXTJOIN, TRIM, SUBSTITUTE.","Split ‘Dhaka-1207’ into district and code.","Split ‘Dhaka-1207’ into district and code.","TEXT returns text, not numbers."],
+      ["Date & Time","Use TODAY, NOW, DATE, YEAR, MONTH, EOMONTH, WORKDAY.","Count days left until an exam.","Count days left until an exam.","Dates are stored as numbers."],
+      ["Lookup & Reference","Use XLOOKUP, VLOOKUP, INDEX, MATCH, FILTER, etc.","Find a student's section from their roll.","Find a student's section from their roll.","Prefer XLOOKUP when available."],
+      ["Math & Trig","Use SUMIFS, ROUND, ABS, SUBTOTAL, AGGREGATE and more.","Add only the ‘Food’ expense rows.","Add only the ‘Food’ expense rows.","SUMIFS handles many conditions."],
+      ["More Functions","Access Statistical, Engineering, Information, and other categories.","Find the standard deviation of marks.","Find the standard deviation of marks.","Choose functions by need."]
     ]},
     {name:"Defined Names",desc:"Give meaningful names to cells, ranges, formulas, or constants.",tools:[
-      ["Name Manager","Create, edit, delete, and audit defined names.","Manage a range named Pass_Marks.","Pass_Marks নামের range পরিচালনা করুন।","Names make formulas readable."],
-      ["Define Name","Create a named range or constant.","Name a cell as Vat_Rate.","একটি ঘরের নাম দিন Vat_Rate।","Avoid spaces in names."],
-      ["Use in Formula","Insert existing names into formulas.","Use =Price*Qty names in the bill.","বিলে =Price*Qty নাম ব্যবহার করুন।","Names improve maintainability."],
-      ["Create from Selection","Generate names from row/column labels.","Create names from a small item table.","ছোট পণ্য টেবিল থেকে নাম তৈরি করুন।","Review generated names."]
+      ["Name Manager","Create, edit, delete, and audit defined names.","Manage a range named Pass_Marks.","Manage a range named Pass_Marks.","Names make formulas readable."],
+      ["Define Name","Create a named range or constant.","Name a cell as Vat_Rate.","Name a cell as Vat_Rate.","Avoid spaces in names."],
+      ["Use in Formula","Insert existing names into formulas.","Use =Price*Qty names in the bill.","Use =Price*Qty names in the bill.","Names improve maintainability."],
+      ["Create from Selection","Generate names from row/column labels.","Create names from a small item table.","Create names from a small item table.","Review generated names."]
     ]},
     {name:"Formula Auditing",desc:"Understand formula relationships and errors.",tools:[
-      ["Trace Precedents","Show cells feeding the selected formula.","See where the total gets its numbers.","মোট কোন কোন ঘর থেকে সংখ্যা নেয় তা দেখুন।","Great for auditing files."],
-      ["Trace Dependents","Show formulas that use the selected cell.","See which totals change if a price changes.","দাম বদলালে কোন মোট বদলাবে তা দেখুন।","Remove arrows after checking."],
-      ["Remove Arrows","Clear precedent/dependent arrows.","Clean up the auditing marks.","Auditing-এর তীরগুলো মুছে ফেলুন।","Does not change formulas."],
-      ["Show Formulas","Display formulas instead of results.","Check that every row uses the same formula.","প্রতিটি সারি একই ফর্মুলা ব্যবহার করছে কি না দেখুন।","Shortcut is Ctrl+`."],
-      ["Error Checking","Find common formula errors.","Find #DIV/0! or #N/A cells.","#DIV/0! বা #N/A ঘর খুঁজুন।","Do not hide errors blindly."],
-      ["Evaluate Formula","Step through a formula calculation.","Debug a nested IF step by step.","জটিল IF ধাপে ধাপে পরীক্ষা করুন।","Great for IF and lookups."],
-      ["Watch Window","Monitor important cells while working elsewhere.","Watch the grand total while editing items.","আইটেম এডিট করার সময় সর্বমোট monitor করুন।","Useful in large sheets."]
+      ["Trace Precedents","Show cells feeding the selected formula.","See where the total gets its numbers.","See where the total gets its numbers.","Great for auditing files."],
+      ["Trace Dependents","Show formulas that use the selected cell.","See which totals change if a price changes.","See which totals change if a price changes.","Remove arrows after checking."],
+      ["Remove Arrows","Clear precedent/dependent arrows.","Clean up the auditing marks.","Clean up the auditing marks.","Does not change formulas."],
+      ["Show Formulas","Display formulas instead of results.","Check that every row uses the same formula.","Check that every row uses the same formula.","Shortcut is Ctrl+`."],
+      ["Error Checking","Find common formula errors.","Find #DIV/0! or #N/A cells.","Find #DIV/0! or #N/A cells.","Do not hide errors blindly."],
+      ["Evaluate Formula","Step through a formula calculation.","Debug a nested IF step by step.","Debug a nested IF step by step.","Great for IF and lookups."],
+      ["Watch Window","Monitor important cells while working elsewhere.","Watch the grand total while editing items.","Watch the grand total while editing items.","Useful in large sheets."]
     ]},
     {name:"Calculation",desc:"Control recalculation behavior.",tools:[
-      ["Calculation Options","Switch between Automatic and Manual calculation.","Use Manual for a very large sheet.","খুব বড় শিটের জন্য Manual ব্যবহার করুন।","Recalculate before saving."],
-      ["Calculate Now","Recalculate all open workbooks.","Refresh formulas after Manual mode.","Manual mode থেকে আসার পর ফর্মুলা refresh করুন।","Common shortcut is F9."],
-      ["Calculate Sheet","Recalculate the active worksheet.","Refresh just the current sheet.","শুধু বর্তমান শিট refresh করুন।","Useful in big workbooks."]
+      ["Calculation Options","Switch between Automatic and Manual calculation.","Use Manual for a very large sheet.","Use Manual for a very large sheet.","Recalculate before saving."],
+      ["Calculate Now","Recalculate all open workbooks.","Refresh formulas after Manual mode.","Refresh formulas after Manual mode.","Common shortcut is F9."],
+      ["Calculate Sheet","Recalculate the active worksheet.","Refresh just the current sheet.","Refresh just the current sheet.","Useful in big workbooks."]
     ]}
   ]},
 "Data":{desc:"Import, transform, connect, validate, sort, filter, analyze, forecast, and manage datasets.",
   groups:[
     {name:"Get & Transform Data",desc:"Import and shape data with Power Query.",tools:[
-      ["Get Data","Connect to files, databases, web, folders, and other sources.","Import monthly shop sales from CSV files.","CSV ফাইল থেকে মাসিক দোকানের বিক্রি আমদানি করুন।","Use Power Query instead of copy-paste."],
-      ["From Text/CSV","Import delimited text files.","Load a bank statement exported as CSV.","CSV হিসেবে export করা ব্যাংক স্টেটমেন্ট লোড করুন।","Check delimiter and encoding."],
-      ["From Web","Connect to supported web content.","Import a public table from a webpage.","ওয়েবপেজের একটি টেবিল আমদানি করুন।","Web changes can break queries."],
-      ["From Table/Range","Create a Power Query from selected worksheet data.","Clean a messy contact list.","এলোমেলো কন্টাক্ট লিস্ট পরিষ্কার করুন।","Convert to a Table first."],
-      ["Recent Sources / Existing Connections","Reuse previous connections.","Reconnect to the usual data source.","আগের ডেটা সোর্সে আবার connect করুন।","Track source ownership."]
+      ["Get Data","Connect to files, databases, web, folders, and other sources.","Import monthly shop sales from CSV files.","Import monthly shop sales from CSV files.","Use Power Query instead of copy-paste."],
+      ["From Text/CSV","Import delimited text files.","Load a bank statement exported as CSV.","Load a bank statement exported as CSV.","Check delimiter and encoding."],
+      ["From Web","Connect to supported web content.","Import a public table from a webpage.","Import a public table from a webpage.","Web changes can break queries."],
+      ["From Table/Range","Create a Power Query from selected worksheet data.","Clean a messy contact list.","Clean a messy contact list.","Convert to a Table first."],
+      ["Recent Sources / Existing Connections","Reuse previous connections.","Reconnect to the usual data source.","Reconnect to the usual data source.","Track source ownership."]
     ]},
     {name:"Queries & Connections",desc:"Refresh and manage imported/connected data.",tools:[
-      ["Refresh All","Refresh queries, PivotTables, and connections.","Update the morning sales sheet.","সকালের বিক্রি শিট আপডেট করুন।","Check for refresh errors."],
-      ["Queries & Connections","Open the pane showing queries and connections.","Review which sources feed the report.","রিপোর্ট কোন সোর্স থেকে আসছে দেখুন।","Rename queries clearly."],
-      ["Properties","Configure connection refresh and background behavior.","Refresh data when the file opens.","ফাইল খুললেই যেন ডেটা refresh হয়।","Auto refresh can slow startup."]
+      ["Refresh All","Refresh queries, PivotTables, and connections.","Update the morning sales sheet.","Update the morning sales sheet.","Check for refresh errors."],
+      ["Queries & Connections","Open the pane showing queries and connections.","Review which sources feed the report.","Review which sources feed the report.","Rename queries clearly."],
+      ["Properties","Configure connection refresh and background behavior.","Refresh data when the file opens.","Refresh data when the file opens.","Auto refresh can slow startup."]
     ]},
     {name:"Sort & Filter",desc:"Control record order and visibility.",tools:[
-      ["Sort A→Z / Z→A","Quickly sort ascending or descending.","Sort marks from highest to lowest.","নম্বর সবচেয়ে বেশি থেকে কমে sort করুন।","Expand selection to keep rows together."],
-      ["Custom Sort","Sort by multiple levels or custom lists.","Sort by class, then by marks.","আগে ক্লাস, তারপর নম্বর অনুযায়ী sort করুন।","Set ‘My data has headers’."],
-      ["Filter","Add dropdown filters to headers.","Show only one month or one city.","শুধু এক মাস বা এক শহর দেখান।","Use Tables for persistent filters."],
-      ["Clear / Reapply","Remove or reapply filter criteria.","Reapply the filter after adding rows.","নতুন সারি যোগ করার পরে filter আবার চালান।","Reapply updates results."],
-      ["Advanced Filter","Filter using a criteria range or extract unique records.","Extract unique phone numbers to a list.","ইউনিক ফোন নম্বর একটি তালিকায় বের করুন।","Power Query is easier for repeats."]
+      ["Sort A→Z / Z→A","Quickly sort ascending or descending.","Sort marks from highest to lowest.","Sort marks from highest to lowest.","Expand selection to keep rows together."],
+      ["Custom Sort","Sort by multiple levels or custom lists.","Sort by class, then by marks.","Sort by class, then by marks.","Set ‘My data has headers’."],
+      ["Filter","Add dropdown filters to headers.","Show only one month or one city.","Show only one month or one city.","Use Tables for persistent filters."],
+      ["Clear / Reapply","Remove or reapply filter criteria.","Reapply the filter after adding rows.","Reapply the filter after adding rows.","Reapply updates results."],
+      ["Advanced Filter","Filter using a criteria range or extract unique records.","Extract unique phone numbers to a list.","Extract unique phone numbers to a list.","Power Query is easier for repeats."]
     ]},
     {name:"Data Tools",desc:"Clean, validate, consolidate, and model data.",tools:[
-      ["Text to Columns","Split one column into several by delimiter or width.","Split ‘City - Code’ into two columns.","‘City - Code’ কে দুই কলামে ভাগ করুন।","Preview to avoid overwriting."],
-      ["Flash Fill","Detect patterns and fill transformed text automatically.","Extract first names from a full-name list.","পুরো নাম থেকে প্রথম নাম বের করুন।","Flash Fill returns values, not formulas."],
-      ["Remove Duplicates","Delete duplicate records based on chosen columns.","Keep one entry per phone number.","প্রতি ফোন নম্বরের একটি এন্ট্রি রাখুন।","Back up if duplicates matter."],
-      ["Data Validation","Restrict allowed cell inputs and create dropdowns.","Allow only Pass / Fail / Pending.","শুধু Pass / Fail / Pending অনুমতি দিন।","Use custom formulas for rules."],
-      ["Consolidate","Combine summary values from multiple ranges.","Combine each child's pocket money totals.","প্রতিটি সন্তানের হাতখরচের মোট একত্র করুন।","Best with consistent layouts."],
-      ["Relationships","Create relationships between tables in the Data Model.","Link Sales and Products by Product ID.","Product ID দিয়ে Sales ও Products লিংক করুন।","Keys must be unique on the ‘one’ side."],
-      ["Data Types","Convert text into linked data types like Geography.","Turn country names into Geography data.","দেশের নামকে Geography data-তে বদলান।","Availability varies by version."]
+      ["Text to Columns","Split one column into several by delimiter or width.","Split ‘City - Code’ into two columns.","Split ‘City - Code’ into two columns.","Preview to avoid overwriting."],
+      ["Flash Fill","Detect patterns and fill transformed text automatically.","Extract first names from a full-name list.","Extract first names from a full-name list.","Flash Fill returns values, not formulas."],
+      ["Remove Duplicates","Delete duplicate records based on chosen columns.","Keep one entry per phone number.","Keep one entry per phone number.","Back up if duplicates matter."],
+      ["Data Validation","Restrict allowed cell inputs and create dropdowns.","Allow only Pass / Fail / Pending.","Allow only Pass / Fail / Pending.","Use custom formulas for rules."],
+      ["Consolidate","Combine summary values from multiple ranges.","Combine each child's pocket money totals.","Combine each child's pocket money totals.","Best with consistent layouts."],
+      ["Relationships","Create relationships between tables in the Data Model.","Link Sales and Products by Product ID.","Link Sales and Products by Product ID.","Keys must be unique on the ‘one’ side."],
+      ["Data Types","Convert text into linked data types like Geography.","Turn country names into Geography data.","Turn country names into Geography data.","Availability varies by version."]
     ]},
     {name:"Forecast",desc:"Analyze scenarios and future trends.",tools:[
-      ["What-If Analysis","Access Scenario Manager, Goal Seek, and Data Tables.","Find the marks needed to reach an average of 80.","গড় ৮০ পেতে কত নম্বর দরকার তা বের করুন।","Goal Seek: one input, one target."],
-      ["Forecast Sheet","Create time-series forecasts with confidence intervals.","Forecast next month's electricity bill.","পরের মাসের বিদ্যুৎ বিলের পূর্বাভাস দিন।","Quality depends on data pattern."]
+      ["What-If Analysis","Access Scenario Manager, Goal Seek, and Data Tables.","Find the marks needed to reach an average of 80.","Find the marks needed to reach an average of 80.","Goal Seek: one input, one target."],
+      ["Forecast Sheet","Create time-series forecasts with confidence intervals.","Forecast next month's electricity bill.","Forecast next month's electricity bill.","Quality depends on data pattern."]
     ]},
     {name:"Outline",desc:"Group and summarize worksheet rows or columns.",tools:[
-      ["Group","Collapse detailed rows or columns into expandable sections.","Group each month's daily rows together.","প্রতি মাসের দৈনিক সারিগুলো group করুন।","Useful for long reports."],
-      ["Ungroup","Remove grouping.","Return the report to full detail.","রিপোর্ট আবার পূর্ণ বিস্তারে ফিরিয়ে আনুন।","Ungroup does not delete data."],
-      ["Subtotal","Insert automatic subtotal rows into sorted data.","Subtotal expenses by category.","খরচ ক্যাটাগরি অনুযায়ী subtotal করুন।","PivotTables are more flexible."]
+      ["Group","Collapse detailed rows or columns into expandable sections.","Group each month's daily rows together.","Group each month's daily rows together.","Useful for long reports."],
+      ["Ungroup","Remove grouping.","Return the report to full detail.","Return the report to full detail.","Ungroup does not delete data."],
+      ["Subtotal","Insert automatic subtotal rows into sorted data.","Subtotal expenses by category.","Subtotal expenses by category.","PivotTables are more flexible."]
     ]}
   ]},
 "Review":{desc:"Proof, comment, collaborate, control changes, improve accessibility, and protect workbook content.",
   groups:[
     {name:"Proofing & Accessibility",desc:"Check language, writing, and accessibility.",tools:[
-      ["Spelling","Check spelling in cells and text objects.","Proofread a letter before printing.","প্রিন্ট করার আগে একটি চিঠির বানান যাচাই করুন।","Add custom words to the dictionary."],
-      ["Thesaurus","Find synonyms for selected words.","Find a better word for ‘good’ in a report.","রিপোর্টে ‘good’-এর ভালো সমার্থক শব্দ খুঁজুন।","Keep terminology consistent."],
-      ["Check Accessibility","Identify issues for users with disabilities.","Find images missing alt text.","alt text ছাড়া ছবিগুলো খুঁজুন।","Improves usability for everyone."]
+      ["Spelling","Check spelling in cells and text objects.","Proofread a letter before printing.","Proofread a letter before printing.","Add custom words to the dictionary."],
+      ["Thesaurus","Find synonyms for selected words.","Find a better word for ‘good’ in a report.","Find a better word for ‘good’ in a report.","Keep terminology consistent."],
+      ["Check Accessibility","Identify issues for users with disabilities.","Find images missing alt text.","Find images missing alt text.","Improves usability for everyone."]
     ]},
     {name:"Comments & Notes",desc:"Discuss cells and store annotations.",tools:[
-      ["New Comment","Add threaded comments for collaboration.","Ask your teacher to check a value.","শিক্ষককে একটি মান যাচাই করতে বলুন।","Use @mentions to notify."],
-      ["Show Comments","Open the comments pane.","Review unresolved discussion items.","অমীমাংসিত আলোচনাগুলো দেখুন।","Resolve comments when done."],
-      ["Notes","Add traditional cell notes.","Explain why a number is unusual.","একটি সংখ্যা কেন অদ্ভুত তার কারণ লিখুন।","Notes differ from comments."]
+      ["New Comment","Add threaded comments for collaboration.","Ask your teacher to check a value.","Ask your teacher to check a value.","Use @mentions to notify."],
+      ["Show Comments","Open the comments pane.","Review unresolved discussion items.","Review unresolved discussion items.","Resolve comments when done."],
+      ["Notes","Add traditional cell notes.","Explain why a number is unusual.","Explain why a number is unusual.","Notes differ from comments."]
     ]},
     {name:"Protect",desc:"Limit edits and protect workbook structure.",tools:[
-      ["Protect Sheet","Restrict editing of locked cells and selected actions.","Let users edit marks but not formulas.","নম্বর এডিট করতে দিন, ফর্মুলা নয়।","Helpful, but not strong encryption."],
-      ["Protect Workbook","Protect workbook structure such as adding/removing sheets.","Stop accidental sheet deletion.","ভুলে শিট মুছে যাওয়া ঠেকান।","Keep the password safe."],
-      ["Allow Edit Ranges","Permit selected ranges in a protected sheet.","Let only the marks column be edited.","শুধু নম্বরের কলাম এডিট করতে দিন।","Set ranges before protecting."]
+      ["Protect Sheet","Restrict editing of locked cells and selected actions.","Let users edit marks but not formulas.","Let users edit marks but not formulas.","Helpful, but not strong encryption."],
+      ["Protect Workbook","Protect workbook structure such as adding/removing sheets.","Stop accidental sheet deletion.","Stop accidental sheet deletion.","Keep the password safe."],
+      ["Allow Edit Ranges","Permit selected ranges in a protected sheet.","Let only the marks column be edited.","Let only the marks column be edited.","Set ranges before protecting."]
     ]}
   ]},
 "View":{desc:"Control how the workbook appears, freeze navigation areas, manage windows, and automate interface actions.",
   groups:[
     {name:"Workbook Views",desc:"Switch worksheet viewing modes.",tools:[
-      ["Normal","Standard worksheet editing view.","Return to everyday worksheet work.","সাধারণ কাজে ফিরে আসুন।","Best default for most tasks."],
-      ["Page Break Preview","See how data is divided across printed pages.","Check where a long list splits.","লম্বা তালিকা কোথায় ভাগ হচ্ছে দেখুন।","Drag break lines to reposition."],
-      ["Page Layout","View printed-page layout including margins and headers.","Fine-tune a printable form.","প্রিন্টযোগ্য ফর্ম পরিমার্জন করুন।","May be slower on huge sheets."],
-      ["Custom Views","Save combinations of display/print settings.","Switch between an editing and a printing view.","এডিটিং ও প্রিন্টিং view-এর মধ্যে বদলান।","Not available with Tables in some files."]
+      ["Normal","Standard worksheet editing view.","Return to everyday worksheet work.","Return to everyday worksheet work.","Best default for most tasks."],
+      ["Page Break Preview","See how data is divided across printed pages.","Check where a long list splits.","Check where a long list splits.","Drag break lines to reposition."],
+      ["Page Layout","View printed-page layout including margins and headers.","Fine-tune a printable form.","Fine-tune a printable form.","May be slower on huge sheets."],
+      ["Custom Views","Save combinations of display/print settings.","Switch between an editing and a printing view.","Switch between an editing and a printing view.","Not available with Tables in some files."]
     ]},
     {name:"Show",desc:"Show or hide interface elements.",tools:[
-      ["Ruler","Show ruler in Page Layout view.","Align objects on the printed page.","প্রিন্ট পেজে object align করুন।","Mainly in Page Layout view."],
-      ["Gridlines","Show or hide worksheet gridlines.","Hide gridlines on a clean marksheet.","পরিষ্কার মার্কশিটে gridline লুকান।","Does not remove borders."],
-      ["Formula Bar","Show or hide the formula bar.","Hide it for more vertical space.","বেশি জায়গা পেতে লুকিয়ে রাখুন।","Keep visible when editing."],
-      ["Headings","Show or hide row numbers and column letters.","Hide headings in presentation view.","প্রেজেন্টেশনে heading লুকান।","Turn back on for editing."]
+      ["Ruler","Show ruler in Page Layout view.","Align objects on the printed page.","Align objects on the printed page.","Mainly in Page Layout view."],
+      ["Gridlines","Show or hide worksheet gridlines.","Hide gridlines on a clean marksheet.","Hide gridlines on a clean marksheet.","Does not remove borders."],
+      ["Formula Bar","Show or hide the formula bar.","Hide it for more vertical space.","Hide it for more vertical space.","Keep visible when editing."],
+      ["Headings","Show or hide row numbers and column letters.","Hide headings in presentation view.","Hide headings in presentation view.","Turn back on for editing."]
     ]},
     {name:"Zoom",desc:"Control worksheet magnification.",tools:[
-      ["Zoom","Choose a specific zoom percentage.","Set 80% to view a wide table.","চওড়া টেবিল দেখতে ৮০% করুন।","Zoom changes display only."],
-      ["100%","Reset zoom to 100%.","Return to normal scale.","স্বাভাবিক scale-এ ফিরে আসুন।","Useful after close inspection."],
-      ["Zoom to Selection","Fit the current selection to the window.","Focus on just the chart area.","শুধু চার্ট অংশে মনোযোগ দিন।","Quick for review."]
+      ["Zoom","Choose a specific zoom percentage.","Set 80% to view a wide table.","Set 80% to view a wide table.","Zoom changes display only."],
+      ["100%","Reset zoom to 100%.","Return to normal scale.","Return to normal scale.","Useful after close inspection."],
+      ["Zoom to Selection","Fit the current selection to the window.","Focus on just the chart area.","Focus on just the chart area.","Quick for review."]
     ]},
     {name:"Window",desc:"Manage panes and multiple workbook windows.",tools:[
-      ["New Window","Open another window of the same workbook.","View data and summary side by side.","ডেটা ও সারসংক্ষেপ পাশাপাশি দেখুন।","Both windows edit the same file."],
-      ["Arrange All","Tile or arrange workbook windows.","Compare two files at once.","একসাথে দুটি ফাইল তুলনা করুন।","Useful during reconciliation."],
-      ["Freeze Panes","Keep selected rows/columns visible while scrolling.","Keep headers visible in a long list.","লম্বা তালিকায় header দেখতে থাকুন।","Select cell below/right of the freeze."],
-      ["Split","Divide a worksheet into independently scrollable panes.","Compare the top and bottom of a list.","তালিকার উপরের ও নিচের অংশ তুলনা করুন।","Both panes can scroll."],
-      ["Hide / Unhide","Hide or reveal workbook windows.","Temporarily hide a reference file.","সাময়িকভাবে একটি রেফারেন্স ফাইল লুকান।","Different from hiding sheets."],
-      ["View Side by Side","Display two workbook windows together.","Compare this month vs last month.","এই মাস বনাম গত মাস তুলনা করুন।","Use Synchronous Scrolling."],
-      ["Switch Windows","Jump between open workbook windows.","Move quickly between two files.","দুই ফাইলের মধ্যে দ্রুত যান।","Helpful with many files open."]
+      ["New Window","Open another window of the same workbook.","View data and summary side by side.","View data and summary side by side.","Both windows edit the same file."],
+      ["Arrange All","Tile or arrange workbook windows.","Compare two files at once.","Compare two files at once.","Useful during reconciliation."],
+      ["Freeze Panes","Keep selected rows/columns visible while scrolling.","Keep headers visible in a long list.","Keep headers visible in a long list.","Select cell below/right of the freeze."],
+      ["Split","Divide a worksheet into independently scrollable panes.","Compare the top and bottom of a list.","Compare the top and bottom of a list.","Both panes can scroll."],
+      ["Hide / Unhide","Hide or reveal workbook windows.","Temporarily hide a reference file.","Temporarily hide a reference file.","Different from hiding sheets."],
+      ["View Side by Side","Display two workbook windows together.","Compare this month vs last month.","Compare this month vs last month.","Use Synchronous Scrolling."],
+      ["Switch Windows","Jump between open workbook windows.","Move quickly between two files.","Move quickly between two files.","Helpful with many files open."]
     ]},
     {name:"Macros",desc:"Access macro automation features.",tools:[
-      ["View Macros","View, run, edit, create, or delete macros.","Run a macro that formats the report.","রিপোর্ট ফরম্যাট করা macro চালান।","Only enable trusted macros."],
-      ["Record Macro","Record actions as VBA instructions.","Record repetitive formatting steps.","বারবার করা ফরম্যাটিং ধাপ রেকর্ড করুন।","Recorded macros may need editing."],
-      ["Use Relative References","Record movements relative to the active cell.","Make a macro work from any starting cell.","যেকোনো ঘর থেকে macro কাজ করবে।","Understand before recording."]
+      ["View Macros","View, run, edit, create, or delete macros.","Run a macro that formats the report.","Run a macro that formats the report.","Only enable trusted macros."],
+      ["Record Macro","Record actions as VBA instructions.","Record repetitive formatting steps.","Record repetitive formatting steps.","Recorded macros may need editing."],
+      ["Use Relative References","Record movements relative to the active cell.","Make a macro work from any starting cell.","Make a macro work from any starting cell.","Understand before recording."]
     ]}
   ]},
 "Automate":{desc:"Create and run Office Scripts and connect Excel processes with supported automation workflows in Microsoft 365.",
   groups:[
     {name:"Office Scripts",desc:"Automate repeatable Excel tasks with TypeScript-based scripts.",tools:[
-      ["New Script","Create a script from the code editor or recorder.","Write a script to tidy a daily export.","দৈনিক export পরিষ্কার করার script লিখুন।","Use meaningful names."],
-      ["Record Actions","Record Excel actions and convert them into an Office Script.","Record the steps that format a report.","একটি রিপোর্ট ফরম্যাট করার ধাপ রেকর্ড করুন।","Review the code before use."],
-      ["All Scripts","Browse scripts available to you.","Run a template-preparation script.","টেমপ্লেট তৈরির script চালান।","Sharing depends on settings."],
-      ["Run Script","Execute an Office Script against the current workbook.","Clean and format the report automatically.","রিপোর্ট স্বয়ংক্রিয়ভাবে পরিষ্কার ও ফরম্যাট করুন।","Test on a copy first."]
+      ["New Script","Create a script from the code editor or recorder.","Write a script to tidy a daily export.","Write a script to tidy a daily export.","Use meaningful names."],
+      ["Record Actions","Record Excel actions and convert them into an Office Script.","Record the steps that format a report.","Record the steps that format a report.","Review the code before use."],
+      ["All Scripts","Browse scripts available to you.","Run a template-preparation script.","Run a template-preparation script.","Sharing depends on settings."],
+      ["Run Script","Execute an Office Script against the current workbook.","Clean and format the report automatically.","Clean and format the report automatically.","Test on a copy first."]
     ]},
     {name:"Workflow Integration",desc:"Connect Excel automation with cloud workflows.",tools:[
-      ["Power Automate Integration","Use supported flows to trigger actions around Excel data.","Send a message when a new row is added.","নতুন সারি যোগ হলে একটি বার্তা পাঠান।","Requires suitable licensing."]
+      ["Power Automate Integration","Use supported flows to trigger actions around Excel data.","Send a message when a new row is added.","Send a message when a new row is added.","Requires suitable licensing."]
     ]}
   ]},
 "Help":{desc:"Access Microsoft help, training, support, feedback, and product information.",
   groups:[{name:"Help & Support",desc:"Find assistance and learning resources.",tools:[
-    ["Help","Search Excel help topics and guidance.","Learn how to make a PivotTable.","PivotTable বানানোর নিয়ম জানুন।","Search with feature name + goal."],
-    ["Training","Open available learning resources.","Learn Power Query basics.","Power Query-এর বেসিক শিখুন।","Availability varies by version."],
-    ["Contact Support","Access support options where available.","Get help with an account issue.","account সমস্যায় সহায়তা নিন।","Channels depend on subscription."],
-    ["Feedback","Send feedback about Excel to Microsoft.","Report a feature you would like to see.","একটি নতুন feature-এর অনুরোধ জানান।","Add clear reproduction steps."],
-    ["What's New","Review recent Excel features.","See newly released Microsoft 365 functions.","নতুন functionগুলো দেখুন।","Rollout timing may differ."]
+    ["Help","Search Excel help topics and guidance.","Learn how to make a PivotTable.","Learn how to make a PivotTable.","Search with feature name + goal."],
+    ["Training","Open available learning resources.","Learn Power Query basics.","Learn Power Query basics.","Availability varies by version."],
+    ["Contact Support","Access support options where available.","Get help with an account issue.","Get help with an account issue.","Channels depend on subscription."],
+    ["Feedback","Send feedback about Excel to Microsoft.","Report a feature you would like to see.","Report a feature you would like to see.","Add clear reproduction steps."],
+    ["What's New","Review recent Excel features.","See newly released Microsoft 365 functions.","See newly released Microsoft 365 functions.","Rollout timing may differ."]
   ]}]
 }
 };
@@ -653,8 +652,8 @@ const excel = {
 const tabOrder = ["File","Home","Insert","Draw","Page Layout","Formulas","Errors","Data","Review","View","Automate","Help"];
 
 /* =====================================================================
-   Real Excel view: ছোট ছোট সহজ টেবিল + কোন ঘরে ফর্মুলা, তা দেখানো হয়।
-   sheets = যে ডেটা Excel-এ দেখা যাবে
+   Real Excel view: small sample sheets + which cell gets the formula.
+   sheets = the little Excel-like data tables
    ===================================================================== */
 const sheets = {
   marks:{cols:["A","B","C","D","E"],head:["Name","Math","Science","Total","Result"],
@@ -683,211 +682,211 @@ const sheets = {
 
 /* viewMap: toolName -> [sheetKey, formulaBarText, highlightCells(csv), note] */
 const viewMap = {
- "#DIV/0!":["errors","=A2/B2","C2","১০ কে ০ দিয়ে ভাগ → #DIV/0!","#DIV/0!"],
- "#VALUE!":["errors","=A4*2","C4","লেখাকে গুণ করলে → #VALUE!","#VALUE!"],
- "#NAME?":["errors","=SUMM(A2:A3)","C3","ফাংশনের নাম ভুল → #NAME?","#NAME?"],
- "#REF!":["errors","=A2+#REF!","C5","মুছে ফেলা ঘরের রেফারেন্স","#REF!"],
- "#NUM!":["errors","=SQRT(A6)","C6","ঋণাত্মক সংখ্যার বর্গমূল → #NUM!","#NUM!"],
- "#NULL!":["errors","=SUM(A2 A3)","C7","ভুল রেঞ্জ অপারেটর → #NULL!","#NULL!"],
- "#####":["errors","","C8","কলাম সরু — চওড়া করুন","#####"],
- "#SPILL!":["errors","=SORT(A8:A11)","C9","নিচে ডেটা থাকলে → #SPILL!","#SPILL!"],
- "#CALC!":["errors","=FILTER(A2:A10,B2:B10=99)","C10","খালি অ্যারে → #CALC!","#CALC!"],
- "#GETTING_DATA":["errors","","C11","বাইরের ডেটা এখনো আসছে","#GETTING_DATA"],
- "IFERROR":["errors","=IFERROR(A2/B2,0)","C2","ভুল হলে বিকল্প মান",0],
- "IFNA":["employees","=IFNA(XLOOKUP(\"E09\",A2:A4,B2:B4),\"পাওয়া যায়নি\")","E2","লুকআপ না পেলে বার্তা","পাওয়া যায়নি"],
- "ISERROR / ISERR":["errors","=ISERROR(A4*2)","C4","ভুল হলে TRUE","TRUE"],
- "ERROR.TYPE":["errors","=ERROR.TYPE(#REF!)","C5","ভুলের ধরন সংখ্যা (4)",4],
- "Error Checking":["marks","","B2:B5","Excel নিজেই ভুল ফর্মুলা খুঁজে দেয়"],
- "New":["budget","","","Home Budget টেমপ্লেট থেকে নতুন ফাইল"],
- "Open":["budget","","","Recent সূচি থেকে ফাইল খোলা"],
- "Save / Save As":["budget","","","Ctrl+S দিয়ে সংরক্ষণ — File ট্যাবে নাম দেখা যায়"],
- "Info":["budget","","","File → Info: ফাইলের সব তথ্য"],
- "Print":["marks","","A1:D5","Print Preview-তে এক পেজে ফিট"],
- "Share":["budget","","","Share করে অন্য জনের সাথে একসাথে কাজ"],
- "Export":["sales","","","Export → Create PDF"],
- "Close":["budget","","","বর্তমান ফাইল বন্ধ করা"],
- "Account":["budget","","","File → Account"],
- "Options":["budget","","","File → Options → AutoRecover চালু"],
- "Paste":["marks","","B6:D6","কপি করা মোটের সারি পেস্ট"],
- "Cut":["contacts","","","ঠিকানা কলাম সরিয়ে প্রথমে আনা"],
- "Copy":["marks","=SUM(B2:C2)","D2","=SUM(B2:C2) কপি করে নিচে নামানো",155],
- "Format Painter":["marks","","A1:D1","শিরোনামের ফরম্যাট অন্যদের দেওয়া"],
- "Font & Size":["sales","","A1:C1","শিরোনাম বড় ও মোটা করা"],
- "Bold / Italic / Underline":["sales","","A5:C5","Grand Total সারি বোল্ড"],
- "Borders":["marks","","A1:D5","মার্কশিটের চারপাশে বর্ডার"],
- "Fill Color":["marks","","B2:C5","ভরাট করা ঘরগুলো রঙ করা"],
- "Font Color":["budget","","B5:B5","বাকি টাকা লাল রঙে"],
- "Top/Middle/Bottom Align":["contacts","","A2:B4","লম্বা সারিতে নাম মাঝ-উচ্চতায়"],
- "Left/Center/Right Align":["marks","","A1:D1","শিরোনাম মাঝখানে"],
- "Orientation":["sales","","A1:C1","মাসের নাম কাত করা"],
- "Wrap Text":["contacts","","","লম্বা ঠিকানা এক ঘরে কয়েক লাইনে"],
- "Merge & Center":["marks","","A1:D1","পুরো তালিকার উপরে শিরোনাম Merge"],
- "Increase / Decrease Indent":["contacts","","A2:A4","নামগুলো ভেতরে সরানো"],
- "Number Format":["marks","=AVERAGE(B2:B5)","B6","0.873 → 87.3% দেখানো",76.75],
- "Accounting / Currency":["budget","","B2:B5","৳ ফরম্যাটে টাকা"],
- "Percent Style":["marks","","C2:C5","0.85 → 85%"],
- "Comma Style":["sales","","B2:C5","1,250,000 ধরনের ফরম্যাট"],
- "Increase / Decrease Decimal":["marks","=AVERAGE(D2:D5)","D6","গড় এক দশমিকে",155.25],
- "Conditional Formatting":["marks","","B2:B5","৪০-এর কম নম্বর লাল"],
- "Format as Table":["products","","A1:D4","শপিং লিস্টকে ফিল্টারযোগ্য টেবিল"],
- "Cell Styles":["marks","","B2:C5","Input/Bad স্টাইল ব্যবহার"],
- "Insert":["marks","","E1:E1","নতুন ‘Remarks’ কলাম"],
- "Delete":["marks","","E1:E1","অব্যবহৃত কলাম মুছে ফেলা"],
- "Format":["contacts","","A1:B4","কলাম AutoFit"],
- "AutoSum":["budget","=SUM(B2:B5)","B6","=SUM(B2:B5) মোট বাজার খরচ",26800],
- "Fill":["tasks","","B2:B5","পুরো মাসের তারিখ fill"],
- "Clear":["marks","","B2:D5","পুরনো নম্বর মুছে ফেলা"],
- "Sort & Filter":["marks","","","শুধু পাস করা শিক্ষার্থীদের দেখানো"],
- "Find & Select":["contacts","","","‘Dhaka’ লেখা ঘর খোঁজা"],
- "PivotTable":["sales","","","পণ্য ও মাস অনুযায়ী বিক্রির সারসংক্ষেপ"],
- "Recommended PivotTables":["marks","","","Excel-এর সাজেস্ট করা PivotTable"],
- "Table":["products","","A1:D4","শপিং লিস্টকে স্ট্রাকচার্ড টেবিল"],
- "Pictures":["tasks","","","প্রজেক্ট শিটে একটি ছবি"],
- "Shapes":["tasks","","","মোটের দিকে তীর"],
- "Icons":["products","","","শপিং শিটে কার্ট আইকন"],
- "SmartArt":["tasks","","","ভর্তির ধাপগুলো দেখানো"],
- "Screenshot":["tasks","","","অ্যাপ স্ক্রিন ক্যাপচার"],
- "Recommended Charts":["savings","","","সঞ্চয়ের সাজেস্ট করা চার্ট"],
- "Column / Bar Chart":["products","","","প্রতিটি পণ্যের বিক্রি তুলনা"],
- "Line / Area Chart":["savings","","","মাসিক সঞ্চয়ের ধারা"],
- "Pie / Doughnut Chart":["budget","","","বাজেটের ভাগ"],
- "Hierarchy Chart":["budget","","","খরচের ভাগ Treemap"],
- "Waterfall / Funnel / Stock / Surface / Radar":["savings","","","সঞ্চয় কীভাবে বাড়ল Waterfall"],
- "Combo Chart":["sales","","","বিক্রি কলাম + লক্ষ্য লাইন"],
- "PivotChart":["sales","","","ইন্টারঅ্যাকটিভ বিক্রি চার্ট"],
- "Line / Column / Win-Loss Sparkline":["marks","","D2:D5","প্রত্যেক শিক্ষার্থীর mini trend"],
- "Slicer":["sales","","","শহর অনুযায়ী ফিল্টার বাটন"],
- "Timeline":["sales","","","মাস অনুযায়ী date ফিল্টার"],
- "Link":["tasks","","","টপিক থেকে ওয়েবসাইট লিংক"],
- "Text Box":["sales","","","ড্যাশবোর্ডে একটি নোট"],
- "Header & Footer":["marks","","","স্কুলের নাম ও পেজ নম্বর"],
- "WordArt":["tasks","","","পোস্টারের মজার শিরোনাম"],
- "Signature Line":["tasks","","","অনুমোদনের জন্য signature"],
- "Equation":["marks","","","ক্ষেত্রফলের সূত্র"],
- "Symbol":["marks","","","° বা ৳ চিহ্ন"],
- "Get Add-ins":["budget","","","একটি ক্যালেন্ডার add-in"],
- "My Add-ins":["budget","","","আগের add-in খোলা"],
- "Select":["tasks","","","হাতে লেখা নোট সিলেক্ট"],
- "Eraser":["tasks","","","পুরনো মন্তব্য মোছা"],
- "Pen / Pencil / Highlighter":["marks","","B2:B5","গুরুত্বপূর্ণ নম্বর হাইলাইট"],
- "Lasso Select":["tasks","","","এক গ্রুপ নোট ঘিরে সিলেক্ট"],
- "Ink to Shape":["tasks","","","এলোমেলো বক্স ঠিক করা"],
- "Ink to Math":["marks","","","হাতে লেখা ভগ্নাংশ → equation"],
- "Drawing Canvas":["tasks","","","ঘর ছাড়াই স্কেচ"],
- "Themes":["sales","","","পুরো প্রজেক্টে এক রূপ"],
- "Colors":["sales","","","উজ্জ্বল রঙের প্যালেট"],
- "Fonts":["sales","","","সব শিরোনাম একই ফন্টে"],
- "Effects":["tasks","","","শেপে হালকা 3D"],
- "Margins":["sales","","","চওড়া টেবিলের সরু margin"],
- "Orientation":["sales","","","Landscape-এ প্রিন্ট"],
- "Size":["marks","","","A4 কাগজে প্রিন্ট"],
- "Print Area":["sales","","B1:C5","শুধু সারসংক্ষেপ অংশ প্রিন্ট"],
- "Breaks":["marks","","","প্রতিটি ক্লাস নতুন পেজে"],
- "Background":["sales","","","হালকা ব্যাকগ্রাউন্ড"],
- "Print Titles":["contacts","","A1:B1","প্রতিটি পেজে হেডার সারি"],
- "Width / Height":["sales","","","১ পেজে ফিট"],
- "Scale":["sales","","","৯০% সাইজে প্রিন্ট"],
- "Gridlines View / Print":["marks","","","gridline লুকানো"],
- "Headings View / Print":["marks","","","row/column অক্ষর প্রিন্ট"],
- "Bring Forward / Send Backward":["sales","","","লেবেল সামনে আনা"],
- "Selection Pane":["sales","","","লুকানো চার্ট খোঁজা"],
- "Align":["sales","","","কার্ডগুলো সারিবদ্ধ"],
- "Group":["sales","","","চার্ট ও শিরোনাম group"],
- "Rotate":["tasks","","","তীর ঘুরানো"],
- "Insert Function":["marks","=AVERAGE(B2:B5)","B6","নাম দিয়ে গড় ফাংশন খোঁজা",76.75],
- "Financial":["savings","=PMT(0.08/12,60,-100000)","B5","ঋণের কিস্তি (EMI)",2028],
- "Logical":["marks","=IF(B2>=40,\"Pass\",\"Fail\")","E2","=IF(B2>=40,\"Pass\",\"Fail\")","Pass"],
- "Text":["contacts","=LEFT(A2,FIND(\" \",A2)-1)","C2","নাম থেকে প্রথম অংশ","Rahim"],
- "Date & Time":["tasks","=B2-TODAY()","D2","পরীক্ষা পর্যন্ত বাকি দিন",5],
- "Lookup & Reference":["employees","=XLOOKUP(\"E01\",A2:A4,B2:B4)","E2","রোল দিয়ে নাম খোঁজা","Rahim"],
- "Math & Trig":["budget","=SUMIFS(B2:B5,A2:A5,\"Food\")","B7","শুধু Food খরচ যোগ",8000],
- "More Functions":["marks","=STDEV.S(B2:B5)","C6","নম্বরের standard deviation",10.6],
- "Name Manager":["marks","","B2:B5","Pass_Marks range পরিচালনা"],
- "Define Name":["products","","B2:B4","Vat_Rate নামের ঘর"],
- "Use in Formula":["products","=Price*Qty","D2","=Price*Qty নাম ব্যবহার",500],
- "Create from Selection":["products","","A1:D4","লেবেল থেকে নাম তৈরি"],
- "Trace Precedents":["marks","","B2:C2","মোট কোন ঘর থেকে আসছে"],
- "Trace Dependents":["products","","B2:B4","দাম বদলালে কোন মোট বদলাবে"],
- "Remove Arrows":["marks","","","Auditing-এর তীর মোছা"],
- "Show Formulas":["marks","","B2:D5","ফলাফলের বদলে ফর্মুলা দেখা"],
- "Error Checking":["sales","","B2:C5","#DIV/0! বা #N/A খোঁজা"],
- "Evaluate Formula":["marks","=IF(B2>=40,\"Pass\",\"Fail\")","E2","ধাপে ধাপে IF পরীক্ষা"],
- "Watch Window":["products","=SUM(D2:D4)","D5","এডিট করার সময় মোট monitor",6900],
- "Calculation Options":["savings","","","বড় শিটে Manual mode"],
- "Calculate Now":["savings","","","সব ফর্মুলা refresh করুন"],
- "Calculate Sheet":["savings","","","শুধু বর্তমান শিট refresh"],
- "Get Data":["sales","","","CSV থেকে মাসিক বিক্রি আমদানি"],
- "From Text/CSV":["sales","","","ব্যাংক স্টেটমেন্ট CSV লোড"],
- "From Web":["sales","","","ওয়েবপেজের টেবিল আমদানি"],
- "From Table/Range":["contacts","","A1:B4","এলোমেলো কন্টাক্ট পরিষ্কার"],
- "Recent Sources / Existing Connections":["sales","","","আগের সোর্সে reconnect"],
- "Refresh All":["sales","","","সকালের বিক্রি আপডেট"],
- "Queries & Connections":["sales","","","রিপোর্ট কোন সোর্স থেকে আসছে"],
- "Properties":["sales","","","ফাইল খুললেই refresh"],
- "Sort A→Z / Z→A":["marks","","B2:B5","নম্বর বেশি থেকে কমে sort"],
- "Custom Sort":["marks","","","আগে ক্লাস, তারপর নম্বর"],
- "Filter":["sales","","","শুধু এক মাস দেখানো"],
- "Clear / Reapply":["sales","","","নতুন সারির পরে filter আবার"],
- "Advanced Filter":["contacts","","","ইউনিক ফোন নম্বর বের করা"],
- "Text to Columns":["contacts","","C2","‘City - Code’ ভাগ করা"],
- "Flash Fill":["contacts","=LEFT(A2,FIND(\" \",A2)-1)","C2","নাম থেকে প্রথম নাম","Rahim"],
- "Remove Duplicates":["contacts","","A1:B4","প্রতি নম্বরের এক এন্ট্রি"],
- "Data Validation":["tasks","","C2:C4","শুধু Pass/Fail/Pending ড্রপডাউন"],
- "Consolidate":["savings","","B2:C4","প্রতিটি মাসের মোট একত্র"],
- "Relationships":["products","","A1:D4","Product ID দিয়ে টেবিল লিংক"],
- "Data Types":["contacts","","","দেশের নাম → Geography"],
- "What-If Analysis":["marks","=AVERAGE(B2:B5)","B6","গড় ৮০ পেতে Goal Seek",76.75],
- "Forecast Sheet":["savings","","B2:B4","পরের মাসের বিল পূর্বাভাস"],
- "Group":["marks","","A2:A5","প্রতি মাসের সারি group"],
- "Ungroup":["marks","","A2:A5","আবার পূর্ণ বিস্তার"],
- "Subtotal":["budget","=SUBTOTAL(9,B2:B5)","B6","ক্যাটাগরি অনুযায়ী subtotal",26800],
- "Spelling":["tasks","","","চিঠির বানান যাচাই"],
- "Thesaurus":["tasks","","","ভালো সমার্থক শব্দ"],
- "Check Accessibility":["tasks","","","alt text ছাড়া ছবি খোঁজা"],
- "New Comment":["marks","","B2","শিক্ষককে মান যাচাই করতে বলা"],
- "Show Comments":["marks","","","অমীমাংসিত আলোচনা দেখা"],
- "Notes":["marks","","B2","একটি সংখ্যার কারণ লেখা"],
- "Protect Sheet":["marks","","B2:D5","নম্বর এডিট, ফর্মুলা নয়"],
- "Protect Workbook":["marks","","","ভুলে শিট মুছে যাওয়া ঠেকানো"],
- "Allow Edit Ranges":["marks","","B2:D5","শুধু নম্বরের কলাম এডিট"],
- "Normal":["marks","","","সাধারণ worksheet কাজ"],
- "Page Break Preview":["contacts","","","লম্বা তালিকা কোথায় ভাগ হচ্ছে"],
- "Page Layout":["marks","","","প্রিন্টযোগ্য ফর্ম পরিমার্জন"],
- "Custom Views":["sales","","","এডিটিং ও প্রিন্টিং view"],
- "Ruler":["sales","","","প্রিন্ট পেজে object align"],
- "Gridlines":["marks","","","পরিষ্কার মার্কশিটে gridline লুকানো"],
- "Formula Bar":["marks","","","বেশি জায়গার জন্য ফর্মুলা বার লুকানো"],
- "Headings":["marks","","","প্রেজেন্টেশনে heading লুকানো"],
- "Zoom":["sales","","","চওড়া টেবিল দেখতে ৮০%"],
- "100%":["sales","","","স্বাভাবিক scale-এ ফেরা"],
- "Zoom to Selection":["sales","","B1:C5","শুধু চার্ট অংশে fit"],
- "New Window":["sales","","","ডেটা ও সারসংক্ষেপ পাশাপাশি"],
- "Arrange All":["sales","","","একসাথে দুই ফাইল তুলনা"],
- "Freeze Panes":["contacts","","A2:B4","লম্বা তালিকায় header স্থির"],
- "Split":["marks","","","তালিকার উপরের ও নিচের অংশ"],
- "Hide / Unhide":["sales","","","সাময়িকভাবে ফাইল লুকানো"],
- "View Side by Side":["savings","","","এই মাস বনাম গত মাস"],
- "Switch Windows":["sales","","","দুই ফাইলের মধ্যে দ্রুত যাওয়া"],
- "View Macros":["marks","","","রিপোর্ট ফরম্যাট করা macro চালানো"],
- "Record Macro":["marks","","","বারবারের ফরম্যাটিং রেকর্ড"],
- "Use Relative References":["marks","","","যেকোনো ঘর থেকে macro"],
- "New Script":["sales","","","দৈনিক export পরিষ্কার করার script"],
- "Record Actions":["sales","","","রিপোর্ট ফরম্যাট করার ধাপ রেকর্ড"],
- "All Scripts":["sales","","","টেমপ্লেট তৈরির script চালানো"],
- "Run Script":["sales","","","রিপোর্ট অটো পরিষ্কার ও ফরম্যাট"],
- "Power Automate Integration":["sales","","","নতুন সারিতে বার্তা পাঠানো"],
- "Help":["marks","","","PivotTable বানানোর নিয়ম"],
- "Training":["sales","","","Power Query বেসিক শেখা"],
- "Contact Support":["budget","","","account সমস্যায় সহায়তা"],
- "Feedback":["marks","","","নতুন feature-এর অনুরোধ"],
- "What's New":["sales","","","নতুন function দেখা"]
+ "#DIV/0!":["errors","=A2/B2","C2","Dividing 10 by 0 gives #DIV/0!.","#DIV/0!"],
+ "#VALUE!":["errors","=A4*2","C4","Text “ten” multiplied by 2 gives #VALUE!.","#VALUE!"],
+ "#NAME?":["errors","=SUMM(A2:A3)","C3","=SUMM(A1:A3) gives #NAME? (correct is =SUM).","#NAME?"],
+ "#REF!":["errors","=A2+#REF!","C5","After deleting column C, =SUM(A1:C5) becomes #REF!.","#REF!"],
+ "#NUM!":["errors","=SQRT(A6)","C6","=SQRT(-9) gives #NUM!.","#NUM!"],
+ "#NULL!":["errors","=SUM(A2 A3)","C7","=SUM(A1 A3) gives #NULL!.","#NULL!"],
+ "#####":["errors","","C8","A long number shows ##### until the column is widened.","#####"],
+ "#SPILL!":["errors","=SORT(A8:A11)","C9","=SORT(A1:A10) hits data below and shows #SPILL!.","#SPILL!"],
+ "#CALC!":["errors","=FILTER(A2:A10,B2:B10=99)","C10","=FILTER(...) with no match can give #CALC!.","#CALC!"],
+ "#GETTING_DATA":["errors","","C11","A cell shows #GETTING_DATA while a query is loading.","#GETTING_DATA"],
+ "IFERROR":["errors","=IFERROR(A2/B2,0)","C2","=IFERROR(A2/B2,0) shows 0 instead of #DIV/0!.",0],
+  "IFNA":["employees","=IFNA(XLOOKUP(\"E09\",A2:A4,B2:B4),\"Not found\")","E2","=IFNA(VLOOKUP(A2,D:E,2,0),\"not found\").","Not found"],
+ "ISERROR / ISERR":["errors","=ISERROR(A4*2)","C4","=ISERROR(A2/B2) returns TRUE or FALSE.","TRUE"],
+ "ERROR.TYPE":["errors","=ERROR.TYPE(#REF!)","C5","=ERROR.TYPE(#REF!) returns 4.",4],
+ "Error Checking":["marks","","B2:B5","Find #DIV/0! or #N/A cells."],
+ "New":["budget","","","Start a new monthly home budget from a template."],
+ "Open":["budget","","","Open last week's school result file."],
+ "Save / Save As":["budget","","","Save the class list as Class6_Final.xlsx."],
+ "Info":["budget","","","Check the file details before emailing it to a friend."],
+ "Print":["marks","","A1:D5","Fit the marksheet onto one A4 page."],
+ "Share":["budget","","","Share the family budget with your spouse to edit together."],
+ "Export":["sales","","","Export the school report as PDF."],
+ "Close":["budget","","","Close the finished bill file but keep Excel open."],
+ "Account":["budget","","","Check which account is signed in for OneDrive."],
+ "Options":["budget","","","Turn on AutoRecover so work is not lost in a power cut."],
+ "Paste":["marks","","B6:D6","Copy the total row and paste it into a new report."],
+ "Cut":["contacts","","","Move the ‘Address’ column to the first position."],
+ "Copy":["marks","=SUM(B2:C2)","D2","Copy the total formula down the whole column.",155],
+ "Format Painter":["marks","","A1:D1","Give every heading the same bold blue style."],
+ "Font & Size":["sales","","A1:C1","Make the bill title bigger and bold."],
+ "Bold / Italic / Underline":["sales","","A5:C5","Bold the grand total row."],
+ "Borders":["marks","","A1:D5","Draw a clean border around the marksheet."],
+ "Fill Color":["marks","","B2:C5","Highlight the cells you must fill in."],
+ "Font Color":["budget","","B5:B5","Show the due amount in red."],
+ "Top/Middle/Bottom Align":["contacts","","A2:B4","Middle-align names in tall rows."],
+ "Left/Center/Right Align":["marks","","A1:D1","Center the ‘Pass / Fail’ result."],
+ "Orientation":["sales","","A1:C1","Print a wide marksheet in Landscape."],
+ "Wrap Text":["contacts","","","Wrap a long address inside one cell."],
+ "Merge & Center":["marks","","A1:D1","Make a title across the whole class list."],
+ "Increase / Decrease Indent":["contacts","","A2:A4","Indent family members under a heading."],
+ "Number Format":["marks","=AVERAGE(B2:B5)","B6","Show 0.873 as 87.3%.",76.75],
+  "Accounting / Currency":["budget","","B2:B5","Show pocket money as Tk 1,000.00."],
+ "Percent Style":["marks","","C2:C5","0.85 becomes 85%."],
+ "Comma Style":["sales","","B2:C5","1250000 becomes 1,250,000."],
+ "Increase / Decrease Decimal":["marks","=AVERAGE(D2:D5)","D6","Show marks average to one decimal.",155.25],
+ "Conditional Formatting":["marks","","B2:B5","Show marks under 40 in red automatically."],
+ "Format as Table":["products","","A1:D4","Turn the student list into a filterable table."],
+ "Cell Styles":["marks","","B2:C5","Use Input style for marks you type."],
+ "Insert":["marks","","E1:E1","Add a new column for ‘Remarks’."],
+ "Delete":["marks","","E1:E1","Remove the unused helper column."],
+ "Format":["contacts","","A1:B4","AutoFit all columns after typing names."],
+ "AutoSum":["budget","=SUM(B2:B5)","B6","Insert SUM under the bill column.",26800],
+ "Fill":["tasks","","B2:B5","Fill dates for the whole month."],
+ "Clear":["marks","","B2:D5","Clear last month's entered numbers."],
+ "Sort & Filter":["marks","","","Show only students who passed."],
+ "Find & Select":["contacts","","","Find every cell containing ‘Dhaka’."],
+ "PivotTable":["sales","","","Summarize shop sales by product and month."],
+ "Recommended PivotTables":["marks","","","Get quick views from the class marks list."],
+ "Table":["products","","A1:D4","Turn the shopping list into a dynamic table."],
+ "Pictures":["tasks","","","Add a photo to a school project sheet."],
+ "Shapes":["tasks","","","Draw an arrow to point at the total."],
+ "Icons":["products","","","Add a cart icon to a shopping sheet."],
+ "SmartArt":["tasks","","","Show the steps of a school admission process."],
+ "Screenshot":["tasks","","","Capture an app screen into a how-to sheet."],
+ "Recommended Charts":["savings","","","Chart monthly pocket money vs spent."],
+ "Column / Bar Chart":["products","","","Compare sales of each shop item."],
+ "Line / Area Chart":["savings","","","Track monthly electricity bill."],
+ "Pie / Doughnut Chart":["budget","","","Show home budget share by category."],
+ "Hierarchy Chart":["budget","","","Show expense split: Home > Food > Grocery."],
+ "Waterfall / Funnel / Stock / Surface / Radar":["savings","","","Use a waterfall to explain how savings grew."],
+ "Combo Chart":["sales","","","Sales columns with profit-percent line."],
+ "PivotChart":["sales","","","Interactive sales dashboard with buttons."],
+ "Line / Column / Win-Loss Sparkline":["marks","","D2:D5","Show each student's monthly marks trend."],
+ "Slicer":["sales","","","Filter the sales dashboard by city."],
+ "Timeline":["sales","","","Filter sales data by month."],
+ "Link":["tasks","","","Link a topic to a helpful website."],
+ "Text Box":["sales","","","Add a note on the dashboard sheet."],
+ "Header & Footer":["marks","","","Add the school name and page number to printouts."],
+ "WordArt":["tasks","","","Make a fun title for a poster."],
+ "Signature Line":["tasks","","","Prepare an approval sheet for parents."],
+ "Equation":["marks","","","Write the area formula in a math note."],
+ "Symbol":["marks","","","Insert ° for temperature or Tk for taka."],
+ "Get Add-ins":["budget","","","Install a calendar or map add-in."],
+ "My Add-ins":["budget","","","Launch a previously installed add-in."],
+ "Select":["tasks","","","Select several handwritten notes together."],
+ "Eraser":["tasks","","","Remove an old annotation."],
+ "Pen / Pencil / Highlighter":["marks","","B2:B5","Highlight an important number in the review."],
+ "Lasso Select":["tasks","","","Select one group of handwritten notes."],
+ "Ink to Shape":["tasks","","","Draw a rough box and convert it to a neat one."],
+ "Ink to Math":["marks","","","Turn a written fraction into an equation."],
+ "Drawing Canvas":["tasks","","","Sketch a plan without touching cells."],
+ "Themes":["sales","","","Give the whole project one consistent look."],
+ "Colors":["sales","","","Use bright, friendly colours for a class chart."],
+ "Fonts":["sales","","","Make all headings the same font."],
+ "Effects":["tasks","","","Give shapes a softer 3D look."],
+ "Margins":["sales","","","Use narrow margins to fit a wide table."],
+ "Orientation":["sales","","","Print a wide marksheet in Landscape."],
+ "Size":["marks","","","Print on A4 paper."],
+ "Print Area":["sales","","B1:C5","Print just the summary section."],
+ "Breaks":["marks","","","Start each class on a new page."],
+ "Background":["sales","","","Use a soft background for display only."],
+ "Print Titles":["contacts","","A1:B1","Repeat the header row on every page."],
+ "Width / Height":["sales","","","Fit a wide bill onto 1 page across."],
+ "Scale":["sales","","","Print at 90% size."],
+ "Gridlines View / Print":["marks","","","Hide gridlines on a neat marksheet."],
+ "Headings View / Print":["marks","","","Print row/column letters for a worksheet task."],
+ "Bring Forward / Send Backward":["sales","","","Place the total label above the background."],
+ "Selection Pane":["sales","","","Find a hidden chart or shape."],
+ "Align":["sales","","","Line up dashboard cards neatly."],
+ "Group":["sales","","","Group each month's daily rows together."],
+ "Rotate":["tasks","","","Turn an arrow to point the right way."],
+ "Insert Function":["marks","=AVERAGE(B2:B5)","B6","Find the right average function by name.",76.75],
+ "Financial":["savings","=PMT(0.08/12,60,-100000)","B5","Calculate the EMI of a home loan.",2028],
+ "Logical":["marks","=IF(B2>=40,\"Pass\",\"Fail\")","E2","Show ‘Pass’ or ‘Fail’ from marks.","Pass"],
+ "Text":["contacts","=LEFT(A2,FIND(\" \",A2)-1)","C2","Split ‘Dhaka-1207’ into district and code.","Rahim"],
+ "Date & Time":["tasks","=B2-TODAY()","D2","Count days left until an exam.",5],
+ "Lookup & Reference":["employees","=XLOOKUP(\"E01\",A2:A4,B2:B4)","E2","Find a student's section from their roll.","Rahim"],
+ "Math & Trig":["budget","=SUMIFS(B2:B5,A2:A5,\"Food\")","B7","Add only the ‘Food’ expense rows.",8000],
+ "More Functions":["marks","=STDEV.S(B2:B5)","C6","Find the standard deviation of marks.",10.6],
+ "Name Manager":["marks","","B2:B5","Manage a range named Pass_Marks."],
+ "Define Name":["products","","B2:B4","Name a cell as Vat_Rate."],
+ "Use in Formula":["products","=Price*Qty","D2","Use =Price*Qty names in the bill.",500],
+ "Create from Selection":["products","","A1:D4","Create names from a small item table."],
+ "Trace Precedents":["marks","","B2:C2","See where the total gets its numbers."],
+ "Trace Dependents":["products","","B2:B4","See which totals change if a price changes."],
+ "Remove Arrows":["marks","","","Clean up the auditing marks."],
+ "Show Formulas":["marks","","B2:D5","Check that every row uses the same formula."],
+ "Error Checking":["sales","","B2:C5","Find #DIV/0! or #N/A cells."],
+ "Evaluate Formula":["marks","=IF(B2>=40,\"Pass\",\"Fail\")","E2","Debug a nested IF step by step."],
+ "Watch Window":["products","=SUM(D2:D4)","D5","Watch the grand total while editing items.",6900],
+ "Calculation Options":["savings","","","Use Manual for a very large sheet."],
+ "Calculate Now":["savings","","","Refresh formulas after Manual mode."],
+ "Calculate Sheet":["savings","","","Refresh just the current sheet."],
+ "Get Data":["sales","","","Import monthly shop sales from CSV files."],
+ "From Text/CSV":["sales","","","Load a bank statement exported as CSV."],
+ "From Web":["sales","","","Import a public table from a webpage."],
+ "From Table/Range":["contacts","","A1:B4","Clean a messy contact list."],
+ "Recent Sources / Existing Connections":["sales","","","Reconnect to the usual data source."],
+ "Refresh All":["sales","","","Update the morning sales sheet."],
+ "Queries & Connections":["sales","","","Review which sources feed the report."],
+ "Properties":["sales","","","Refresh data when the file opens."],
+ "Sort A→Z / Z→A":["marks","","B2:B5","Sort marks from highest to lowest."],
+ "Custom Sort":["marks","","","Sort by class, then by marks."],
+ "Filter":["sales","","","Show only one month or one city."],
+ "Clear / Reapply":["sales","","","Reapply the filter after adding rows."],
+ "Advanced Filter":["contacts","","","Extract unique phone numbers to a list."],
+ "Text to Columns":["contacts","","C2","Split ‘City - Code’ into two columns."],
+ "Flash Fill":["contacts","=LEFT(A2,FIND(\" \",A2)-1)","C2","Extract first names from a full-name list.","Rahim"],
+ "Remove Duplicates":["contacts","","A1:B4","Keep one entry per phone number."],
+ "Data Validation":["tasks","","C2:C4","Allow only Pass / Fail / Pending."],
+ "Consolidate":["savings","","B2:C4","Combine each child's pocket money totals."],
+ "Relationships":["products","","A1:D4","Link Sales and Products by Product ID."],
+ "Data Types":["contacts","","","Turn country names into Geography data."],
+ "What-If Analysis":["marks","=AVERAGE(B2:B5)","B6","Find the marks needed to reach an average of 80.",76.75],
+ "Forecast Sheet":["savings","","B2:B4","Forecast next month's electricity bill."],
+ "Group":["marks","","A2:A5","Group each month's daily rows together."],
+ "Ungroup":["marks","","A2:A5","Return the report to full detail."],
+ "Subtotal":["budget","=SUBTOTAL(9,B2:B5)","B6","Subtotal expenses by category.",26800],
+ "Spelling":["tasks","","","Proofread a letter before printing."],
+ "Thesaurus":["tasks","","","Find a better word for ‘good’ in a report."],
+ "Check Accessibility":["tasks","","","Find images missing alt text."],
+ "New Comment":["marks","","B2","Ask your teacher to check a value."],
+ "Show Comments":["marks","","","Review unresolved discussion items."],
+ "Notes":["marks","","B2","Explain why a number is unusual."],
+ "Protect Sheet":["marks","","B2:D5","Let users edit marks but not formulas."],
+ "Protect Workbook":["marks","","","Stop accidental sheet deletion."],
+ "Allow Edit Ranges":["marks","","B2:D5","Let only the marks column be edited."],
+ "Normal":["marks","","","Return to everyday worksheet work."],
+ "Page Break Preview":["contacts","","","Check where a long list splits."],
+ "Page Layout":["marks","","","Fine-tune a printable form."],
+ "Custom Views":["sales","","","Switch between an editing and a printing view."],
+ "Ruler":["sales","","","Align objects on the printed page."],
+ "Gridlines":["marks","","","Hide gridlines on a clean marksheet."],
+ "Formula Bar":["marks","","","Hide it for more vertical space."],
+ "Headings":["marks","","","Hide headings in presentation view."],
+ "Zoom":["sales","","","Set 80% to view a wide table."],
+ "100%":["sales","","","Return to normal scale."],
+ "Zoom to Selection":["sales","","B1:C5","Focus on just the chart area."],
+ "New Window":["sales","","","View data and summary side by side."],
+ "Arrange All":["sales","","","Compare two files at once."],
+ "Freeze Panes":["contacts","","A2:B4","Keep headers visible in a long list."],
+ "Split":["marks","","","Compare the top and bottom of a list."],
+ "Hide / Unhide":["sales","","","Temporarily hide a reference file."],
+ "View Side by Side":["savings","","","Compare this month vs last month."],
+ "Switch Windows":["sales","","","Move quickly between two files."],
+ "View Macros":["marks","","","Run a macro that formats the report."],
+ "Record Macro":["marks","","","Record repetitive formatting steps."],
+ "Use Relative References":["marks","","","Make a macro work from any starting cell."],
+ "New Script":["sales","","","Write a script to tidy a daily export."],
+ "Record Actions":["sales","","","Record the steps that format a report."],
+ "All Scripts":["sales","","","Run a template-preparation script."],
+ "Run Script":["sales","","","Clean and format the report automatically."],
+ "Power Automate Integration":["sales","","","Send a message when a new row is added."],
+ "Help":["marks","","","Learn how to make a PivotTable."],
+ "Training":["sales","","","Learn Power Query basics."],
+ "Contact Support":["budget","","","Get help with an account issue."],
+ "Feedback":["marks","","","Report a feature you would like to see."],
+ "What's New":["sales","","","See newly released Microsoft 365 functions."]
 };
 
 /* =====================================================================
-   keys: toolName -> কীবোর্ড শর্টকাট (যেখানে আছে)
+   keys: toolName -> keyboard shortcut (where available)
    ===================================================================== */
 const keys = {
- "New":"Ctrl + N","Open":"Ctrl + O","Save / Save As":"Ctrl + S (একই নাম) / F12 (নতুন নাম)","Print":"Ctrl + P","Close":"Ctrl + W","Options":"Alt + F, T",
+  "New":"Ctrl + N","Open":"Ctrl + O","Save / Save As":"Ctrl + S (same name) / F12 (new name)","Print":"Ctrl + P","Close":"Ctrl + W","Options":"Alt + F, T",
  "Paste":"Ctrl + V","Cut":"Ctrl + X","Copy":"Ctrl + C","Format Painter":"Ctrl + Shift + C",
  "Bold / Italic / Underline":"Ctrl + B / Ctrl + I / Ctrl + U","Borders":"Ctrl + Shift + &","Fill Color":"Alt + H, H","Font Color":"Alt + H, F, C",
  "Top/Middle/Bottom Align":"Alt + H, A, T / M / B","Left/Center/Right Align":"Alt + H, A, L / C / R","Orientation":"Alt + H, F, Q",
@@ -916,7 +915,7 @@ const keys = {
 };
 
 /* =====================================================================
-   Excel view helpers: ঘরের মান বের করা ও ➜ arrow flow বানানো
+   Excel view helpers: read cell values and build the ➜ arrow flow
    ===================================================================== */
 function cellVal(addr, sheet){
   const m = /^([A-Z]{1,3})(\d+)$/.exec(addr); if(!m) return "";
@@ -944,7 +943,7 @@ function expandRange(addr){
   return o;
 }
 function formulaRefs(formula, activeCell){
-  const noStr = (formula||"").replace(/"[^"]*"/g,"");          // বাদ: উদ্ধৃতির ভেতরের মান
+  const noStr = (formula||"").replace(/"[^"]*"/g,"");          // skip quoted values
   const toks = noStr.match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g) || [];
   const set = new Set();
   toks.forEach(t=>{ expandRange(t).forEach(x=>{ if(x!==activeCell) set.add(x); }); });
@@ -955,37 +954,37 @@ function buildFlow(formula, hl, activeCell, sheet, note, res){
     const refs = (formula.replace(/"[^"]*"/g,"").match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g) || []).filter(r=>r!==activeCell);
     const ranges = refs.filter(r=>r.includes(":"));
     const inputs = ranges.length ? ranges : [...new Set(refs)];
-    const inText = inputs.length ? inputs.join(", ") : "ইনপুট";
+    const inText = inputs.length ? inputs.join(", ") : "Input";
     const inVal = inputs.map(r=> r.includes(":") ? rangeVals(r,sheet).slice(0,8).join(", ") : cellVal(r,sheet))
                         .filter(x=>x!=="").join(", ");
     const outVal = (res!==undefined && res!=="") ? res : (activeCell ? cellVal(activeCell,sheet) : "");
     return `
       <div class="flow">
-        <span class="node in"><i class="mk m1">1</i>${inText}<small>${inVal||"ডেটা"}</small></span>
+        <span class="node in"><i class="mk m1">1</i>${inText}<small>${inVal||"data"}</small></span>
         <span class="arw">➜</span>
         <span class="node fx">⚙ ${formula}</span>
         <span class="arw">➜</span>
-        <span class="node out"><i class="mk m2">2</i>${activeCell||"ফলাফল"}<small>${outVal!==""? "= "+outVal : "ফলাফল"}</small></span>
+        <span class="node out"><i class="mk m2">2</i>${activeCell||"Result"}<small>${outVal!==""? "= "+outVal : "Result"}</small></span>
       </div>
-      <div class="flow-cap">➜ (1) প্রথমে <b>${inText}</b> ঘরগুলো থেকে ডেটা নেওয়া হলো → (⚙) ফর্মুলা <b>${formula}</b> হিসাব করল → (2) <b>${activeCell||"ফলাফল"}</b> ঘরে ফলাফল <b>${outVal!==""? outVal : ""}</b> বসলো।</div>`;
+      <div class="flow-cap">➜ (1) First, data is taken from cells <b>${inText}</b> → (⚙) the formula <b>${formula}</b> is calculated → (2) the result <b>${outVal!==""? outVal : ""}</b> lands in cell <b>${activeCell||"Result"}</b>.</div>`;
   }
   const cells = hl.map(a=>expandRange(a)).flat();
   const preview = cells.map(a=>cellVal(a,sheet)).filter(x=>x!=="").slice(0,8).join(", ");
   return `
       <div class="flow">
-        <span class="node in"><i class="mk m1">1</i>আগে (Before)<small>${preview||"সাধারণ ডেটা"}</small></span>
+        <span class="node in"><i class="mk m1">1</i>Before<small>${preview||"plain data"}</small></span>
         <span class="arw">➜</span>
-        <span class="node fx">⚙ ${note||"ফিচার প্রয়োগ"}</span>
+        <span class="node fx">⚙ ${note||"Apply feature"}</span>
         <span class="arw">➜</span>
-        <span class="node out"><i class="mk m2">2</i>পরে (After)<small>ফিচার প্রয়োগ হয়েছে</small></span>
+        <span class="node out"><i class="mk m2">2</i>After<small>Feature applied</small></span>
       </div>
-      <div class="flow-cap">➜ (1) আগে ডেটা ছিল সাধারণ → (⚙) <b>${note||"এই ফিচারটি"}</b> প্রয়োগ করা হলো → (2) এখন ডেটা আরও পরিষ্কার ও বোধগম্য।</div>`;
+      <div class="flow-cap">➜ (1) Before, the data was plain → (⚙) applied <b>${note||"this feature"}</b> → (2) Now the data is clearer and easier to understand.</div>`;
 }
 
 function colLetter(i){return String.fromCharCode(65+i);}
 
 function renderExcelView(toolName){
-  const spec = viewMap[toolName] || ["marks","","","Excel-এ এই ফিচারটি এভাবে দেখা যায়।"];
+  const spec = viewMap[toolName] || ["marks","","","How this feature looks in Excel."];
   const sheet = sheets[spec[0]] || sheets.marks;
   const formula = spec[1] || "";
   const hl = (spec[2]||"").split(",").map(s=>s.trim()).filter(Boolean);
@@ -993,7 +992,7 @@ function renderExcelView(toolName){
   const res = spec[4];
   const activeCell = hl[0] || "";
 
-  // কোন ঘরগুলো ইনপুট, কোনটি ফলাফল — মার্ক করার জন্য
+  // Which cells are inputs, which is the result — for markers
   const inputSet = formula ? formulaRefs(formula, activeCell) : new Set();
   const markSet = new Set();
   if(!formula){ hl.forEach(a=>expandRange(a).forEach(x=>markSet.add(x))); }
@@ -1027,10 +1026,10 @@ function renderExcelView(toolName){
   const flowHTML = buildFlow(formula, hl, activeCell, sheet, note, res);
 
   const legend = formula
-    ? `<div class="xls-legend"><span><i class="mk m1">1</i> <b>ইনপুট ডেটা</b> — যে ঘর থেকে হিসাব হয়</span><span><i class="mk m2">2</i> <b>ফলাফল</b> — ফর্মুলা এখানে বসে</span></div>`
-    : `<div class="xls-legend"><span><i class="mk m1">1</i> <b>এই ঘরগুলোতে</b> ফিচারটি প্রয়োগ হবে</span></div>`;
+    ? `<div class="xls-legend"><span><i class="mk m1">1</i> <b>Input data</b> — the cells the calculation uses</span><span><i class="mk m2">2</i> <b>Result</b> — where the formula lands</span></div>`
+    : `<div class="xls-legend"><span><i class="mk m1">1</i> <b>These cells</b> will get the feature applied</span></div>`;
   const resultBar = (formula && activeCell && outVal!=="")
-    ? `<div class="xls-result">✅ <b>ফলাফল:</b> <span class="big">${activeCell} = ${outVal}</span> <span style="color:#4b5563">← ফর্মুলা: ${formula}</span></div>`
+    ? `<div class="xls-result">✅ <b>Result:</b> <span class="big">${activeCell} = ${outVal}</span> <span style="color:#4b5563">← formula: ${formula}</span></div>`
     : "";
 
   return `
@@ -1055,7 +1054,7 @@ function renderExcelView(toolName){
       <tbody>${body}</tbody>
     </table>
     ${resultBar}
-    <div class="xls-note">📍 ${note} &nbsp;•&nbsp; রেঞ্জ: ${colLetter(0)}1:${lastCol}${lastRow}</div>
+    <div class="xls-note">📍 ${note} &nbsp;•&nbsp; Range: ${colLetter(0)}1:${lastCol}${lastRow}</div>
   </div>
   ${flowHTML}`;
 }
@@ -1129,10 +1128,9 @@ function openModal(tab,group,tool){
   const sc = keys[tool[0]];
   const path = (viewMap[tool[0]]||[])[3] || "";
   document.getElementById("modalKeys").innerHTML = sc
-    ? `<span class="kbd">${sc}</span><span style="color:#64748b;font-size:12px">কীবোর্ড শর্টকাট</span>`
-    : `<span class="kbd ghost">${path||"Ribbon menu"}</span><span style="color:#64748b;font-size:12px">রিবন থেকে ব্যবহার করুন</span>`;
+    ? `<span class="kbd">${sc}</span><span style="color:#64748b;font-size:12px">Keyboard shortcut</span>`
+    : `<span class="kbd ghost">${path||"Ribbon menu"}</span><span style="color:#64748b;font-size:12px">Use from the ribbon</span>`;
   document.getElementById("modalExample").textContent=tool[2];
-  document.getElementById("modalExampleBn").textContent=tool[3];
   document.getElementById("modalExcel").innerHTML=renderExcelView(tool[0]);
   document.getElementById("modalTip").textContent=tool[4];
   document.getElementById("modalBackdrop").style.display="flex";
@@ -1141,8 +1139,8 @@ function closeModal(){document.getElementById("modalBackdrop").style.display="no
 document.getElementById("modalBackdrop").addEventListener("click",e=>{if(e.target.id==="modalBackdrop")closeModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
 /* =====================================================================
-   Practice Sheet — একটি ছোট live spreadsheet + ফর্মুলা ইঞ্জিন
-   শিক্ষার্থী নিজে ঘরে সংখ্যা/ফর্মুলা লিখে সাথে সাথে ফলাফল দেখতে পারবে।
+   Practice Sheet — a small live spreadsheet + formula engine
+   Students type numbers/formulas into cells and see the result instantly.
    ===================================================================== */
 let curTool = "";
 let P = { cols:['A','B','C','D','E'], data:{}, sel:'A1', target:'', expected:undefined, tool:'', hint:'', rows:12 };
@@ -1279,12 +1277,12 @@ function checkTask(){
   const msg=document.getElementById('pracMsg');
   if(!P.target){ msg.textContent=''; return; }
   const v=evalCell(P.target), exp=P.expected;
-  if(v==='' || (typeof v==='string' && v[0]==='#')){ msg.textContent='⏳ এখনো হয়নি — ফর্মুলা লিখুন'; msg.style.color='#b45309'; return; }
+  if(v==='' || (typeof v==='string' && v[0]==='#')){ msg.textContent='⏳ Not done yet — write the formula'; msg.style.color='#b45309'; return; }
   let ok;
   if(exp!==undefined && exp!==''){ ok = (typeof exp==='number'&&typeof v==='number')? Math.abs(v-exp)<0.01 : String(v).trim().toLowerCase()===String(exp).trim().toLowerCase(); }
   else { ok = true; }
-  if(ok){ msg.textContent='✅ ঠিক হয়েছে! অসাধারণ! 🎉'; msg.style.color='#16a34a'; }
-  else { msg.textContent='❌ এখনো মিলছে না — আবার চেষ্টা করুন'; msg.style.color='#dc2626'; }
+  if(ok){ msg.textContent='✅ Correct! Well done! 🎉'; msg.style.color='#16a34a'; }
+  else { msg.textContent='❌ Not matching yet — try again'; msg.style.color='#dc2626'; }
 }
 function openPractice(cfg){
   cfg = cfg || {};
@@ -1294,18 +1292,18 @@ function openPractice(cfg){
   P.expected = cfg.expected;
   sh.head.forEach((hh,i)=>{ P.data[idxToCol(i)+'1']=hh; });
   sh.rows.forEach((row,ri)=>{ row.forEach((v,ci)=>{ if(v!==''&&v!==undefined&&v!==null) P.data[idxToCol(ci)+(ri+2)]=String(v); }); });
-  if(P.target) delete P.data[P.target];                 // শিক্ষার্থী নিজে পূরণ করবে
+  if(P.target) delete P.data[P.target];                 // student fills this in
   const trow = P.target? parseInt(P.target.replace(/\D/g,''),10)||0 : 0;
   P.rows = Math.max(12, sh.rows.length+3, trow+1);
   P.sel = P.target || 'A1';
   document.getElementById('pracTitle').textContent = cfg.tool? (cfg.tool+' — Practice') : 'Mini Excel — Practice Sheet';
   const inputs = (cfg.formula||'').replace(/"[^"]*"/g,'').match(/[A-Z]{1,3}\d+(?::[A-Z]{1,3}\d+)?/g)||[];
   document.getElementById('pracTask').innerHTML = P.target
-    ? `🎯 <b>${cfg.tool||''}</b> — <b>${P.target}</b> ঘরটি নির্বাচিত আছে (হলুদ)। টুলবারের ফর্মুলা বক্সে ফর্মুলাটি লিখে <b>Enter</b> চাপুন, যাতে <b>${P.target}</b> ঘরে সঠিক ফলাফল আসে।${P.hint? '<br><span style="color:#6b7280">📍 '+P.hint+'</span>':''}`
-    : `🎯 মুক্তভাবে অনুশীলন করুন — যেকোনো ঘরে ক্লিক করে ফর্মুলা বক্সে লিখুন। যেমন: <b>=SUM(A2:A5)</b>, <b>=AVERAGE(B2:B5)</b>, <b>=IF(A2&gt;=40,"Pass","Fail")</b>, <b>=B2*C2</b>।`;
+    ? `🎯 <b>${cfg.tool||''}</b> — cell <b>${P.target}</b> is selected (yellow). Type the formula in the toolbar formula box and press <b>Enter</b> so that cell <b>${P.target}</b> returns the correct result.${P.hint? '<br><span style="color:#6b7280">📍 '+P.hint+'</span>':''}`
+    : `🎯 Practice freely — click any cell and type in the formula box. For example: <b>=SUM(A2:A5)</b>, <b>=AVERAGE(B2:B5)</b>, <b>=IF(A2&gt;=40,"Pass","Fail")</b>, <b>=B2*C2</b>.`;
   document.getElementById('pracInput').value = String(P.data[P.sel]||'');
   document.getElementById('pracName').textContent = P.sel;
-  const m=document.getElementById('pracMsg'); m.textContent = P.target? '⏳ আপনার উত্তর লিখুন…' : ''; m.style.color='#b45309';
+  const m=document.getElementById('pracMsg'); m.textContent = P.target? '⏳ Type your answer…' : ''; m.style.color='#b45309';
   document.getElementById('pracBackdrop').style.display='flex';
   renderPractice();
   setTimeout(()=>{ try{ document.getElementById('pracInput').focus(); }catch(e){} }, 60);
