@@ -1,6 +1,8 @@
 // Vercel Edge Middleware — protects the training page.
-// Fail-open until APP_SECRET is set, so deploying this never locks you out.
+// Uses APP_SECRET if set, otherwise the built-in default secret below.
+// (Set APP_SECRET in Vercel for stronger security — the default is visible in this public repo.)
 
+const DEFAULT_SECRET = '6c0c06d8d4e060c4946ffc1a986f551927434994f71aa6e1a0e314a75657a6b3';
 const enc = new TextEncoder();
 
 function b64uToBytes(s) {
@@ -34,8 +36,7 @@ async function validSession(token, secret) {
 export const config = { matcher: ['/', '/index.html'] };
 
 export default async function middleware(req) {
-  const secret = process.env.APP_SECRET;
-  if (!secret) return; // not configured yet → allow (safe rollout)
+  const secret = process.env.APP_SECRET || DEFAULT_SECRET;
 
   const cookie = req.headers.get('cookie') || '';
   const m = cookie.match(/(?:^|;\s*)excel_session=([^;]+)/);

@@ -1,5 +1,11 @@
 // Verifies the Google ID token, checks the email allowlist, and sets a signed session cookie.
+// Defaults below make it work immediately; env vars (GOOGLE_CLIENT_ID, ALLOWED_EMAILS,
+// APP_SECRET) override them.
 const crypto = require('crypto');
+
+const DEFAULT_CLIENT_ID = '848559795512-nrc7d8ctgsbt8l3b58qsffv3clbe7d8u.apps.googleusercontent.com';
+const DEFAULT_ALLOWED   = ['ferhan.aust@gmail.com'];   // <-- add more Gmail addresses here
+const DEFAULT_SECRET    = '6c0c06d8d4e060c4946ffc1a986f551927434994f71aa6e1a0e314a75657a6b3';
 
 function b64u(buf) {
   return Buffer.from(buf).toString('base64')
@@ -14,11 +20,7 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const secret = process.env.APP_SECRET;
-  if (!secret) {
-    res.status(500).json({ error: 'not_configured' });
-    return;
-  }
+  const secret = process.env.APP_SECRET || DEFAULT_SECRET;
 
   const body = req.body || {};
   const credential = body.credential || body.id_token;
@@ -41,20 +43,22 @@ module.exports = async (req, res) => {
   }
 
   const email = String(info.email || '').toLowerCase().trim();
-  const clientId = process.env.GOOGLE_CLIENT_ID || '';
+  const clientId = process.env.GOOGLE_CLIENT_ID || DEFAULT_CLIENT_ID;
   if (!email) {
     res.status(401).json({ error: 'no_email' });
     return;
   }
-  if (clientId && info.aud !== clientId) {
+  if (info.aud !== clientId) {
     res.status(401).json({ error: 'aud_mismatch' });
     return;
   }
 
-  // Allowed emails (comma/space separated). If empty, any signed-in Google account is allowed.
-  const allowed = String(process.env.ALLOWED_EMAILS || '')
+  // Allowed emails: env ALLOWED_EMAILS if provided, else the DEFAULT_ALLOWED list above.
+  const envAllowed = String(process.env.ALLOWED_EMAILS || '')
     .toLowerCase().split(/[,\s]+/).filter(Boolean);
-  if (allowed.length && allowed.indexOf(email) === -1) {
+  const allowed = envAllowed.length ? envAllowed : DEFAULT_ALLOWED.map(function (e) { return e.toLowerCase(); });
+
+  if (allowed.indexOf(email) === -1) {
     res.status(403).json({ error: 'not_allowed', email });
     return;
   }
