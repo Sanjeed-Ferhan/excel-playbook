@@ -192,6 +192,19 @@
   .practice-launch{width:100%;border:0;cursor:pointer;font-family:inherit;font-weight:800;font-size:14px;color:#fff;
     padding:12px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#06b6d4);box-shadow:0 8px 20px rgba(124,58,237,.35)}
   .practice-launch:hover{filter:brightness(1.06)}
+  /* ===== Lecture navigation ===== */
+  .lectures{display:flex;gap:6px;overflow-x:auto;margin-top:12px;padding-bottom:2px}
+  .lecbtn{border:0;background:rgba(255,255,255,.1);color:#e5e7eb;white-space:nowrap;padding:9px 14px;
+    border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;transition:.15s}
+  .lecbtn:hover{background:rgba(255,255,255,.22)}
+  .lecbtn.active{background:linear-gradient(135deg,#107c41,#1f6feb);color:#fff;box-shadow:0 4px 12px rgba(16,124,65,.45)}
+  .lec-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:44px 30px;text-align:center;
+    box-shadow:var(--shadow);max-width:720px;margin:40px auto}
+  .lec-num{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.1em;color:#fff;
+    background:linear-gradient(135deg,#107c41,#1f6feb);padding:5px 14px;border-radius:20px}
+  .lec-card h2{margin:16px 0 8px;font-size:26px;color:#0b5f32}
+  .lec-card p{color:var(--muted);font-size:14px;line-height:1.6}
+  .lec-card .soon{display:inline-block;margin-top:14px;font-size:12px;font-weight:700;color:#92400e;background:#fef3c7;padding:6px 14px;border-radius:20px}
 </style>
 </head>
 <body>
@@ -237,10 +250,12 @@
       </svg>
     </div>
   </div>
+  <div class="lectures" id="lectures"></div>
   <nav class="tabs" id="tabs"></nav>
 </header>
 
 <main class="wrap">
+  <div id="lecture1View">
   <section class="hero">
     <div>
       <h2 id="heroTitle">Home</h2>
@@ -260,6 +275,8 @@
   </div>
   <section class="groups" id="groups"></section>
   <div class="empty" id="empty">No matching Excel function found. Try another keyword.</div>
+  </div>
+  <div id="lecturePlaceholder" style="display:none"></div>
 </main>
 
 <div class="modal-backdrop" id="modalBackdrop">
@@ -1322,8 +1339,49 @@ function loadSample(){ const key = P.tool ? (viewMap[P.tool]||['marks'])[0] : 'm
 document.getElementById("pracInput").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); commitCell(); } });
 document.getElementById("pracBackdrop").addEventListener("click",e=>{ if(e.target.id==="pracBackdrop") closePractice(); });
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closePractice(); } });
+/* ===================== Lecture navigation ===================== */
+const LECTURES = [
+  {n:1, title:'Excel Ribbon Function Explorer', desc:'Explore every ribbon tab, command, shortcut and a real Excel view for each feature.'},
+  {n:2, title:'Data Entry & Formatting', desc:'Data types, number formats, alignment, styles and clean table design.'},
+  {n:3, title:'Formulas & Basic Functions', desc:'SUM, AVERAGE, cell references, absolute references and common errors.'},
+  {n:4, title:'Logical Functions (IF & Friends)', desc:'IF, nested IF, AND/OR, IFS, IFERROR and SWITCH.'},
+  {n:5, title:'Lookup & Reference', desc:'VLOOKUP, XLOOKUP, INDEX and MATCH.'},
+  {n:6, title:'Text & Date Functions', desc:'LEFT/RIGHT/MID, TRIM, TEXT, TODAY, EOMONTH and more.'},
+  {n:7, title:'Data Management', desc:'Sort, filter, tables, data validation, flash fill and remove duplicates.'},
+  {n:8, title:'Conditional Formatting & Charts', desc:'Rules, data bars, color scales and choosing the right chart.'},
+  {n:9, title:'PivotTables & Data Analysis', desc:'PivotTables, slicers, timelines, What-If and Goal Seek.'},
+  {n:10, title:'Power Query, Macros & Dashboard', desc:'Automate cleaning, record macros and build a KPI dashboard.'}
+];
+let curLecture = 1;
+function buildLectureBar(){
+  const el = document.getElementById('lectures'); if(!el) return; el.innerHTML='';
+  LECTURES.forEach(L=>{
+    const b=document.createElement('button');
+    b.className='lecbtn'+(L.n===curLecture?' active':'');
+    b.textContent='Lecture '+String(L.n).padStart(2,'0');
+    b.onclick=()=>setLecture(L.n);
+    el.appendChild(b);
+  });
+}
+function setLecture(n){
+  curLecture=n;
+  buildLectureBar();
+  const isL1 = n===1;
+  document.getElementById('tabs').style.display = isL1 ? 'flex' : 'none';
+  document.getElementById('lecture1View').style.display = isL1 ? 'block' : 'none';
+  const ph=document.getElementById('lecturePlaceholder');
+  ph.style.display = isL1 ? 'none' : 'block';
+  if(!isL1){
+    const L=LECTURES.find(x=>x.n===n) || LECTURES[0];
+    ph.innerHTML = `<div class="lec-card"><div class="lec-num">Lecture ${String(n).padStart(2,'0')}</div><h2>${L.title}</h2><p>${L.desc}</p><div class="soon">Content coming soon</div></div>`;
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+buildLectureBar();
+
 searchBox.addEventListener("input",render);
 render();
+setLecture(1);
 </script>
 </body>
 </html>
