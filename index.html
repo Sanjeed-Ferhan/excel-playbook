@@ -205,6 +205,15 @@
   .lec-card h2{margin:16px 0 8px;font-size:26px;color:#0b5f32}
   .lec-card p{color:var(--muted);font-size:14px;line-height:1.6}
   .lec-card .soon{display:inline-block;margin-top:14px;font-size:12px;font-weight:700;color:#92400e;background:#fef3c7;padding:6px 14px;border-radius:20px}
+  /* ===== Copy / inspect protection (deterrent) ===== */
+  body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+  input,textarea{-webkit-user-select:text;-moz-user-select:text;-ms-user-select:text;user-select:text}
+  img{-webkit-user-drag:none;user-drag:none}
+  @media print{body{display:none!important}}
+  #dtBlock{position:fixed;inset:0;z-index:99999;display:none;background:#0b1220;color:#fff;align-items:center;justify-content:center;text-align:center;padding:30px;font-family:"Nirmala UI","Segoe UI",Arial,sans-serif}
+  #dtBlock .b{max-width:540px}
+  #dtBlock h2{font-size:24px;margin:0 0 12px}
+  #dtBlock p{color:#cbd5e1;line-height:1.7;font-size:14px;margin:0}
 </style>
 </head>
 <body>
@@ -1382,6 +1391,32 @@ buildLectureBar();
 searchBox.addEventListener("input",render);
 render();
 setLecture(1);
+</script>
+
+<div id="dtBlock"><div class="b"><h2>🔒 Protected content</h2><p>Developer tools are open. Please close the developer tools to keep viewing this training.</p></div></div>
+<script>
+(function(){
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('dragstart', function(e){ e.preventDefault(); });
+  document.addEventListener('copy', function(e){ var t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return; e.preventDefault(); });
+  document.addEventListener('cut',  function(e){ var t=e.target; if(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA')) return; e.preventDefault(); });
+  document.addEventListener('keydown', function(e){
+    var k = (e.key||'').toLowerCase();
+    if(e.key === 'F12'){ e.preventDefault(); return; }
+    if((e.ctrlKey||e.metaKey) && e.shiftKey && ['i','j','c'].indexOf(k) !== -1){ e.preventDefault(); return; }
+    if((e.ctrlKey||e.metaKey) && ['u','s','p'].indexOf(k) !== -1){ e.preventDefault(); return; }
+  });
+  var block = document.getElementById('dtBlock'), open = false;
+  function check(){
+    var w = window.outerWidth - window.innerWidth;
+    var h = window.outerHeight - window.innerHeight;
+    var devtools = (w > 170) || (h > 170);
+    if(devtools && !open){ open = true; block.style.display = 'flex'; }
+    else if(!devtools && open){ open = false; block.style.display = 'none'; }
+  }
+  setInterval(check, 600);
+  window.addEventListener('resize', check);
+})();
 </script>
 </body>
 </html>
