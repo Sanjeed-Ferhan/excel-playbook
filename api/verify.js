@@ -4,7 +4,7 @@
 const crypto = require('crypto');
 
 const DEFAULT_CLIENT_ID = '848559795512-nrc7d8ctgsbt8l3b58qsffv3clbe7d8u.apps.googleusercontent.com';
-const DEFAULT_ALLOWED   = ['ferhan.aust@gmail.com','iqbal14041986@gmail.com','arbabkhanpanni@gmail.com','riyadh.hassan.me@gmail.com'];   // <-- add more Gmail addresses here
+const DEFAULT_ALLOWED   = ['ferhan.aust@gmail.com','iqbal14041986@gmail.com','arbabkhanpanni@gmail.com','riyadh.hassan.me@gmail.com','a.fardeen.f@gmail.com','faria.orchi@gmail.com'];   // <-- add more Gmail addresses here
 const DEFAULT_SECRET    = '6c0c06d8d4e060c4946ffc1a986f551927434994f71aa6e1a0e314a75657a6b3';
 
 function b64u(buf) {
